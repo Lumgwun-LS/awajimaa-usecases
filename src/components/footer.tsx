@@ -1,4 +1,4 @@
-import { Facebook, Twitter, Instagram, Linkedin, Github, ArrowRight, ExternalLink } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Github, ArrowRight, ExternalLink, Download } from 'lucide-react';
 import { FaTiktok, FaTelegramPlane } from 'react-icons/fa';
 
 const socials = [
@@ -61,11 +61,11 @@ const socials = [
 ];
 
 const platforms = [
-  { name: 'Awajimaa App', url: 'https://awajimaaapp.io', color: 'hover:text-primary' },
-  { name: 'Awa Biz Suite', url: 'https://awajimaaai.com', color: 'hover:text-primary' },
-  { name: 'Awajimaa App Store', url: 'https://awajimaaappstore.com', color: 'hover:text-secondary' },
-  { name: 'GenHaL', url: 'https://genhal.awajimaa.com', color: 'hover:text-[#FFB300]' },
-  { name: 'Awajimaa Schools', url: 'https://awajimaaschools.com', color: 'hover:text-purple-400' },
+  { name: 'Awajimaa App', url: 'https://awajimaaappstore.com', color: 'hover:text-primary', download: true },
+  { name: 'Awa Biz Suite', url: 'https://awajimaaai.com', color: 'hover:text-primary', download: false },
+  { name: 'Awajimaa App Store', url: 'https://awajimaaappstore.com', color: 'hover:text-secondary', download: false },
+  { name: 'GenHaL', url: 'https://genhal.awajimaa.com', color: 'hover:text-[#FFB300]', download: false },
+  { name: 'Awajimaa Schools', url: 'https://awajimaaschools.com', color: 'hover:text-purple-400', download: false },
 ];
 
 const partners = [
@@ -164,7 +164,7 @@ export function Footer() {
           <div>
             <h4 className="font-bold text-white mb-6 uppercase tracking-wider text-sm font-mono">Our Platforms</h4>
             <ul className="space-y-4">
-              {platforms.map(({ name, url, color }) => (
+              {platforms.map(({ name, url, color, download }) => (
                 <li key={name}>
                   <a
                     href={url}
@@ -172,8 +172,16 @@ export function Footer() {
                     rel="noreferrer"
                     className={`text-white/60 ${color} transition-colors flex items-center gap-2 text-sm group`}
                   >
-                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                    {download
+                      ? <Download className="w-3 h-3 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" />
+                      : <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                    }
                     {name}
+                    {download && (
+                      <span className="ml-auto text-[10px] font-mono bg-primary/20 text-primary border border-primary/30 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                        Download
+                      </span>
+                    )}
                   </a>
                 </li>
               ))}

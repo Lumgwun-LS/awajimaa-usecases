@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, ChevronDown } from 'lucide-react';
+import { ArrowRight, ChevronDown, Download } from 'lucide-react';
 import heroImg from '@assets/generated_images/hero-africa.jpg';
 
 export function Hero() {
@@ -58,12 +58,22 @@ export function Hero() {
           transition={{ duration: 1, delay: 0.8 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <button className="h-14 px-8 bg-primary text-primary-foreground font-semibold rounded hover:bg-primary/90 transition-colors flex items-center gap-2 text-lg">
-            Deploy Now <ArrowRight className="w-5 h-5" />
-          </button>
-          <button className="h-14 px-8 border border-white/20 text-white font-semibold rounded hover:bg-white/5 transition-colors text-lg">
-            View the Metrics
-          </button>
+          <a
+            href="https://awajimaaappstore.com"
+            target="_blank"
+            rel="noreferrer"
+            className="h-14 px-8 bg-primary text-black font-semibold rounded hover:bg-primary/90 transition-colors flex items-center gap-2 text-lg"
+          >
+            <Download className="w-5 h-5" /> Get the App
+          </a>
+          <a
+            href="https://awajimaaappstore.com"
+            target="_blank"
+            rel="noreferrer"
+            className="h-14 px-8 border border-white/20 text-white font-semibold rounded hover:bg-white/5 transition-colors text-lg flex items-center gap-2"
+          >
+            Awajimaa App Store <ArrowRight className="w-5 h-5" />
+          </a>
         </motion.div>
       </div>
 
