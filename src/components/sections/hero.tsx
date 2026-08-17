@@ -88,7 +88,7 @@ export function Hero() {
             rel="noreferrer"
             className="h-14 px-8 bg-primary text-black font-semibold rounded hover:bg-primary/90 transition-colors flex items-center gap-2 text-lg"
           >
-            <Download className="w-5 h-5" /> Get the App
+            Enter The Awajimaa App
           </a>
           <a
             href="https://awajimaaappstore.com"
