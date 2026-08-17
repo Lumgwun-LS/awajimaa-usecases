@@ -1,5 +1,6 @@
 import { Facebook, Twitter, Instagram, Linkedin, Github, ArrowRight, ExternalLink, Download } from 'lucide-react';
 import { FaTiktok, FaTelegramPlane } from 'react-icons/fa';
+import awajimaLogo from '@assets/awa_2_1787004371901.jpg';
 
 const socials = [
   {
@@ -89,15 +90,13 @@ export function Footer() {
 
           {/* Column 1: Branding + socials */}
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-primary text-black flex items-center justify-center font-black text-2xl leading-none">
-                A
-              </div>
-              <div>
-                <span className="font-bold text-2xl block leading-none text-white">Awajimaa</span>
-                <span className="text-xs font-mono text-primary tracking-widest uppercase">Group</span>
-              </div>
-            </div>
+            <a href="https://awajimaaapp.io" target="_blank" rel="noreferrer">
+              <img
+                src={awajimaLogo}
+                alt="Awajimaa App — The Future Is Here"
+                className="h-14 w-auto rounded-lg bg-white px-3 py-1 object-contain hover:opacity-90 transition-opacity"
+              />
+            </a>
 
             <p className="text-white/90 font-medium text-sm">Africa's Digital Infrastructure</p>
 
