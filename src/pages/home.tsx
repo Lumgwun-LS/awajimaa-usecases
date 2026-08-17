@@ -7,6 +7,11 @@ import { Marketplace } from '@/components/sections/marketplace';
 import { Logistics } from '@/components/sections/logistics';
 import { InsuranceFinance } from '@/components/sections/insurance-finance';
 import { InvestorScale } from '@/components/sections/investor';
+import { AwaBizSuite } from '@/components/sections/awa-biz-suite';
+import { AppStore } from '@/components/sections/app-store';
+import { GenHal } from '@/components/sections/genhal';
+import { Schools } from '@/components/sections/schools';
+import { Ecosystem } from '@/components/sections/ecosystem';
 import { Footer } from '@/components/footer';
 
 export default function Home() {
@@ -21,6 +26,11 @@ export default function Home() {
       <Logistics />
       <InsuranceFinance />
       <InvestorScale />
+      <AwaBizSuite />
+      <AppStore />
+      <GenHal />
+      <Schools />
+      <Ecosystem />
       <Footer />
     </div>
   );
