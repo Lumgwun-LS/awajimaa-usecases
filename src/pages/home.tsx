@@ -1,3 +1,4 @@
+import { Nav } from '@/components/nav';
 import { Hero } from '@/components/sections/hero';
 import { OsVision } from '@/components/sections/os-vision';
 import { Governor } from '@/components/sections/governor';
@@ -17,19 +18,24 @@ import { Footer } from '@/components/footer';
 export default function Home() {
   return (
     <div className="bg-background min-h-screen text-foreground selection:bg-primary selection:text-primary-foreground">
-      <Hero />
-      <OsVision />
-      <Governor />
-      <Energy />
-      <HealthEmergency />
-      <Marketplace />
-      <Logistics />
-      <InsuranceFinance />
-      <InvestorScale />
-      <AwaBizSuite />
-      <AppStore />
-      <GenHal />
-      <Schools />
+      <Nav />
+      <div id="home"><Hero /></div>
+      <div id="vision"><OsVision /></div>
+      <div id="use-cases">
+        <Governor />
+        <Energy />
+        <HealthEmergency />
+        <Marketplace />
+        <Logistics />
+        <InsuranceFinance />
+      </div>
+      <div id="investors"><InvestorScale /></div>
+      <div id="platforms">
+        <AwaBizSuite />
+        <AppStore />
+        <GenHal />
+        <Schools />
+      </div>
       <Ecosystem />
       <Footer />
     </div>
