@@ -24,7 +24,7 @@ export function Hero() {
           className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-mono tracking-wider mb-8"
         >
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-          SYSTEM ONLINE. CONTINENT CONNECTED.
+          UNIFIED CIVICTECH · FINTECH · SUPER-APP
         </motion.div>
 
         <motion.h1 
@@ -45,7 +45,11 @@ export function Hero() {
           transition={{ duration: 1, delay: 0.6 }}
           className="text-lg md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 font-light"
         >
-          Africa's unified operating system. Emergency response, tele-health, commerce, and governance in one super-app.
+          A unified Civictech &amp; Fintech super-app for{' '}
+          <span className="text-primary font-medium">Reporting Emergencies</span>,{' '}
+          <span className="text-secondary font-medium">Commerce</span>, and{' '}
+          <span className="text-white font-medium">Education</span> —
+          the digital infrastructure powering States &amp; Organizations across Africa and beyond.
         </motion.p>
 
         <motion.div

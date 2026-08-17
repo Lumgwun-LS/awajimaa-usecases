@@ -102,7 +102,7 @@ export function Footer() {
             <p className="text-white/90 font-medium text-sm">Africa's Digital Infrastructure</p>
 
             <p className="text-sm text-white/50 leading-relaxed">
-              Five interconnected platforms powering emergency response, commerce, education, heritage, and business for 1.4 billion Africans.
+              A unified Civictech &amp; Fintech super-intelligent platform for Reporting Emergencies, Commerce, and Education — the digital infrastructure powering States &amp; Organizations across Africa and beyond.
             </p>
 
             {/* Social icons — two rows of 4 + 3 */}

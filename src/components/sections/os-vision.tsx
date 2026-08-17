@@ -24,7 +24,7 @@ export function OsVision() {
               <span className="text-muted-foreground">For A Continent.</span>
             </h2>
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              Awajimaa isn't just an app. It's the digital infrastructure Africa has been waiting for. We combined WeChat's scale, 911's urgency, and Amazon's logistics into a single, unified platform.
+              Awajimaa is a unified <span className="text-white font-medium">Civictech &amp; Fintech</span> super-intelligent platform built on three pillars — <span className="text-primary font-medium">Reporting Emergencies</span>, <span className="text-secondary font-medium">Commerce</span>, and <span className="text-white font-medium">Education</span>. The digital infrastructure designed to power States and Organizations across Africa and beyond.
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12">
