@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/awajimaa-usecases/"
+title = "Awajimaa App — Use Cases & Investor Showcase"
+description = "A cinematic, scroll-driven storytelling website showcasing the Awajimaa super-app's use cases across emergency response, tele-health, surveillance, logistics, insurance, marketplace, and civic governance — targeted at African state governments, oil companies, insurers, and investors."
+version = "1.0.0"
+id = "artifacts/awajimaa-usecases"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/awajimaa-usecases/" ]
+localPort = 19525
+
+[services.development]
+run = "pnpm --filter @workspace/awajimaa-usecases run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/awajimaa-usecases", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/awajimaa-usecases/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19525"
+BASE_PATH = "/awajimaa-usecases/"
