@@ -1,4 +1,5 @@
 import { Nav } from '@/components/nav';
+import { SeoHead } from '@/components/seo-head';
 import { Hero } from '@/components/sections/hero';
 import { OsVision } from '@/components/sections/os-vision';
 import { Governor } from '@/components/sections/governor';
@@ -20,6 +21,7 @@ export default function Home() {
   return (
     <div className="bg-background min-h-screen text-foreground selection:bg-primary selection:text-primary-foreground">
       <Nav />
+      <SeoHead />
       <div id="home"><Hero /></div>
       <div id="vision"><OsVision /></div>
       <div id="use-cases">
