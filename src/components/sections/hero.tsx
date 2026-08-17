@@ -83,7 +83,7 @@ export function Hero() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <a
-            href="https://awajimaaappstore.com"
+            href="https://awajimaaappstore.com/dl/awajimaa-app"
             target="_blank"
             rel="noreferrer"
             className="h-14 px-8 bg-primary text-black font-semibold rounded hover:bg-primary/90 transition-colors flex items-center gap-2 text-lg"

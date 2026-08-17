@@ -190,7 +190,7 @@ export function Nav() {
                 className="text-sm text-white/60 hover:text-white transition-colors font-medium whitespace-nowrap">
                 Contact
               </a>
-              <a href="https://awajimaaappstore.com" target="_blank" rel="noreferrer"
+              <a href="https://awajimaaappstore.com/dl/awajimaa-app" target="_blank" rel="noreferrer"
                 className="h-9 px-4 bg-primary text-black text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-1.5 whitespace-nowrap">
                 Enter The Awajimaa App <ArrowRight className="w-3.5 h-3.5" />
               </a>
@@ -269,7 +269,7 @@ export function Nav() {
                 <a href="https://wa.me/2347067246050" target="_blank" rel="noreferrer"
                   className="w-full h-11 flex items-center justify-center gap-2 border border-white/20 text-white text-sm font-semibold rounded-lg hover:bg-white/5 transition-colors"
                   onClick={() => setMobileOpen(false)}>Contact Us</a>
-                <a href="https://awajimaaappstore.com" target="_blank" rel="noreferrer"
+                <a href="https://awajimaaappstore.com/dl/awajimaa-app" target="_blank" rel="noreferrer"
                   className="w-full h-11 flex items-center justify-center gap-2 bg-primary text-black text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors"
                   onClick={() => setMobileOpen(false)}>
                   Enter The Awajimaa App <ArrowRight className="w-4 h-4" />
