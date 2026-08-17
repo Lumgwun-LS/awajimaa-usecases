@@ -96,7 +96,7 @@ export function Hero() {
             rel="noreferrer"
             className="h-14 px-8 border border-white/20 text-white font-semibold rounded hover:bg-white/5 transition-colors text-lg flex items-center gap-2"
           >
-            Awajimaa App Store <ArrowRight className="w-5 h-5" />
+            Browse App Store <ArrowRight className="w-5 h-5" />
           </a>
         </motion.div>
       </div>

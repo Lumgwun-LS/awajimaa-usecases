@@ -81,12 +81,20 @@ export function InvestorScale() {
             Whether you are a State Governor looking to secure your state, an Oil Executive protecting assets, or an Investor ready to back Africa's unified OS.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="h-14 px-8 bg-black text-white font-semibold rounded hover:bg-black/80 transition-colors flex items-center justify-center gap-2 text-lg">
+            <a
+              href="https://wa.me/2347067246050"
+              target="_blank"
+              rel="noreferrer"
+              className="h-14 px-8 bg-black text-white font-semibold rounded hover:bg-black/80 transition-colors flex items-center justify-center gap-2 text-lg"
+            >
               Contact the Founders <ArrowRight className="w-5 h-5" />
-            </button>
-            <button className="h-14 px-8 border border-black/20 text-black font-semibold rounded hover:bg-black/5 transition-colors text-lg flex items-center justify-center">
+            </a>
+            <a
+              href="mailto:investors@awajimaagroup.com?subject=Pitch%20Deck%20Request&body=Hi%2C%20I%20would%20like%20to%20request%20the%20full%20Awajimaa%20pitch%20deck."
+              className="h-14 px-8 border border-black/20 text-black font-semibold rounded hover:bg-black/5 transition-colors text-lg flex items-center justify-center"
+            >
               Request Full Pitch Deck
-            </button>
+            </a>
           </div>
         </motion.div>
       </div>
