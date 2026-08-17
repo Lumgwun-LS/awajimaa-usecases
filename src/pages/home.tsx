@@ -13,6 +13,7 @@ import { AppStore } from '@/components/sections/app-store';
 import { GenHal } from '@/components/sections/genhal';
 import { Schools } from '@/components/sections/schools';
 import { Ecosystem } from '@/components/sections/ecosystem';
+import { VideoShowcase } from '@/components/sections/video-showcase';
 import { Footer } from '@/components/footer';
 
 export default function Home() {
@@ -36,6 +37,7 @@ export default function Home() {
         <GenHal />
         <Schools />
       </div>
+      <div id="videos"><VideoShowcase /></div>
       <Ecosystem />
       <Footer />
     </div>
