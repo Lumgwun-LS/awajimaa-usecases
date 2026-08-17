@@ -39,6 +39,15 @@ export function Hero() {
           </span>
         </motion.h1>
 
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.55 }}
+          className="text-sm md:text-base font-mono tracking-[0.25em] text-white/40 uppercase mb-4"
+        >
+          Stay Safe, Do More, And Be More
+        </motion.p>
+
         <motion.p 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}

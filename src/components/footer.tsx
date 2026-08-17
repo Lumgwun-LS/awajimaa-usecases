@@ -99,6 +99,7 @@ export function Footer() {
             </a>
 
             <p className="text-white/90 font-medium text-sm">Africa's Digital Infrastructure</p>
+            <p className="text-xs font-mono tracking-widest text-primary/70 uppercase">Stay Safe, Do More, And Be More</p>
 
             <p className="text-sm text-white/50 leading-relaxed">
               A unified Civictech &amp; Fintech super-intelligent platform for Reporting Emergencies, Commerce, and Education — the digital infrastructure powering States &amp; Organizations across Africa and beyond.
