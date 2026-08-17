@@ -280,7 +280,7 @@ export function Footer() {
             usecases.awajimaaapp.io
           </a>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
+            <a href="https://pp.awajimaa.com/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Privacy</a>
             <span>·</span>
             <a href="#" className="hover:text-white transition-colors">Terms</a>
             <span>·</span>
