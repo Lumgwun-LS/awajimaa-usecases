@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown, Download } from 'lucide-react';
 import heroImg from '@assets/generated_images/hero-africa.jpg';
+import iconLogo from '@assets/awa_3_1787004494041.jpg';
 
 export function Hero() {
   return (
@@ -17,6 +18,20 @@ export function Hero() {
       </div>
 
       <div className="relative z-20 container mx-auto px-6 text-center">
+        {/* Icon mark */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="flex justify-center mb-6"
+        >
+          <img
+            src={iconLogo}
+            alt="Awajimaa"
+            className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover shadow-[0_0_40px_rgba(57,255,20,0.25)] ring-2 ring-white/10"
+          />
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
