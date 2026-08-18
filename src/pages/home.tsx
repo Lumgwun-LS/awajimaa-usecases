@@ -4,6 +4,7 @@ import { Hero } from '@/components/sections/hero';
 import { OsVision } from '@/components/sections/os-vision';
 import { Governor } from '@/components/sections/governor';
 import { Energy } from '@/components/sections/energy';
+import { OilSpillage } from '@/components/sections/oil-spillage';
 import { HealthEmergency } from '@/components/sections/health-emergency';
 import { Marketplace } from '@/components/sections/marketplace';
 import { Logistics } from '@/components/sections/logistics';
@@ -27,6 +28,7 @@ export default function Home() {
       <div id="use-cases">
         <Governor />
         <Energy />
+        <OilSpillage />
         <HealthEmergency />
         <Marketplace />
         <Logistics />
