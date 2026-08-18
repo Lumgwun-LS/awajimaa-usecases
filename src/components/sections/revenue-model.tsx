@@ -1,10 +1,91 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
   Building2, Droplets, ShoppingBag, Shield, Car,
   Heart, TrendingUp, ChevronRight, Users, Layers,
-  DollarSign, Zap, Globe,
+  DollarSign, Zap, Globe, Flag,
 } from 'lucide-react';
+
+/* ─── 10-year milestones ────────────────────────────────────────────────── */
+const MILESTONES = [
+  {
+    period: 'Yr 1–2',
+    label: 'Pilot',
+    cumulative: '$85M',
+    bar: 8.5,
+    color: '#60a5fa',
+    drivers: ['3 states subscribed', '8 oil operators', 'Marketplace beta', 'Awa Hub launched'],
+  },
+  {
+    period: 'Yr 3–4',
+    label: 'Growth',
+    cumulative: '$280M',
+    bar: 28,
+    color: '#34d399',
+    drivers: ['12 states', 'Health SaaS live', '15 oil operators', 'Insurance commissions'],
+  },
+  {
+    period: 'Yr 5–6',
+    label: 'Scale',
+    cumulative: '$520M',
+    bar: 52,
+    color: '#fb923c',
+    drivers: ['24 states', 'Mobility at scale', 'Pan-African pilots', 'All 6 streams firing'],
+  },
+  {
+    period: 'Yr 7–8',
+    label: 'Expansion',
+    cumulative: '$780M',
+    bar: 78,
+    color: '#a78bfa',
+    drivers: ['36 states', '3 African nations', 'Oil sector dominant', 'Network compounding'],
+  },
+  {
+    period: 'Yr 9–10',
+    label: '$1 Billion',
+    cumulative: '$1B+',
+    bar: 100,
+    color: '#fbbf24',
+    drivers: ['Full 36-state coverage', 'Multi-country', 'Platform moat locked', 'Exit-grade revenue'],
+  },
+];
+
+const STREAM_CONTRIB = [
+  { label: 'Health SaaS',    pct: 32, color: '#fbbf24' },
+  { label: 'State SaaS',     pct: 22, color: '#60a5fa' },
+  { label: 'Marketplace',    pct: 17, color: '#fb923c' },
+  { label: 'Oil Subs',       pct: 13, color: '#34d399' },
+  { label: 'Mobility',       pct: 10, color: '#f43f5e' },
+  { label: 'Insurance',      pct:  6, color: '#a78bfa' },
+];
+
+/* ─── Animated counter ──────────────────────────────────────────────────── */
+function BillionCounter() {
+  const [val, setVal] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+
+  useEffect(() => {
+    if (!inView) return;
+    let start = 0;
+    const end = 1000;
+    const duration = 2200;
+    const step = 16;
+    const increment = (end / duration) * step;
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) { setVal(end); clearInterval(timer); }
+      else setVal(Math.floor(start));
+    }, step);
+    return () => clearInterval(timer);
+  }, [inView]);
+
+  return (
+    <span ref={ref} className="tabular-nums">
+      ${val < 1000 ? val : '1,000'}
+    </span>
+  );
+}
 
 /* ─── Revenue streams ───────────────────────────────────────────────────── */
 const STREAMS = [
@@ -442,6 +523,151 @@ export function RevenueModel() {
               automatically. One $300K government deal seeds millions in downstream transaction revenue.
             </p>
           </div>
+        </motion.div>
+
+        {/* ── $1 Billion Decade Projection ─────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.05 }}
+          transition={{ duration: 0.7 }}
+          className="mt-20"
+        >
+          {/* Hero statement */}
+          <div className="relative rounded-3xl overflow-hidden border border-amber-500/20 bg-gradient-to-b from-[#0d0a03] to-[#080600] p-10 md:p-16 text-center mb-12">
+            {/* Radial gold glow */}
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(251,191,36,0.12) 0%, transparent 65%)' }} />
+
+            {/* Floating stream labels */}
+            {STREAM_CONTRIB.map((s, i) => {
+              const angles = [10, 40, 150, 170, 200, 330];
+              const radii  = [220, 260, 240, 200, 255, 230];
+              const rad = (angles[i] * Math.PI) / 180;
+              const x = 50 + (radii[i] / 7) * Math.cos(rad);
+              const y = 50 + (radii[i] / 12) * Math.sin(rad);
+              return (
+                <motion.div key={s.label}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.8 + i * 0.1 }}
+                  className="absolute text-[10px] font-mono hidden md:block"
+                  style={{ left: `${x}%`, top: `${y}%`, transform: 'translate(-50%,-50%)', color: s.color, opacity: 0.5 }}
+                >
+                  {s.label}
+                </motion.div>
+              );
+            })}
+
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs font-mono tracking-widest mb-6 uppercase">
+                <Flag className="w-3.5 h-3.5" /> 10-Year Projection
+              </div>
+
+              <div className="text-6xl md:text-9xl font-black text-white mb-2 leading-none tracking-tight">
+                <BillionCounter />
+                <span className="text-amber-400">M</span>
+              </div>
+              <div className="text-lg md:text-2xl font-light text-white/50 mb-3">
+                cumulative platform revenue · Nigeria first · 10 years
+              </div>
+              <div className="text-sm text-white/30 max-w-xl mx-auto leading-relaxed">
+                Six independent revenue streams. Thirty-six states. A continent of 1.4 billion people waiting for
+                digital infrastructure that works. The platform is built. The path is clear.
+              </div>
+
+              {/* Stream contribution bar */}
+              <div className="mt-8 max-w-lg mx-auto">
+                <div className="flex h-3 rounded-full overflow-hidden gap-px mb-3">
+                  {STREAM_CONTRIB.map((s, i) => (
+                    <motion.div key={s.label}
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${s.pct}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1, delay: 0.6 + i * 0.1, ease: 'easeOut' }}
+                      style={{ background: s.color }}
+                      className="h-full first:rounded-l-full last:rounded-r-full"
+                    />
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+                  {STREAM_CONTRIB.map(s => (
+                    <div key={s.label} className="flex items-center gap-1.5">
+                      <div className="w-2 h-2 rounded-full" style={{ background: s.color }} />
+                      <span className="text-[10px] font-mono text-white/35">{s.label} {s.pct}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Milestone timeline */}
+          <div className="relative">
+            {/* Connecting spine */}
+            <div className="absolute left-0 right-0 top-[52px] h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent hidden md:block" />
+
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {MILESTONES.map((m, i) => (
+                <motion.div key={m.period}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.05 }}
+                  transition={{ duration: 0.45, delay: i * 0.1 }}
+                  className="flex flex-col items-center text-center"
+                >
+                  {/* Milestone dot */}
+                  <div className="relative mb-4 z-10">
+                    <motion.div
+                      animate={{ boxShadow: [`0 0 0 0 ${m.color}00`, `0 0 0 8px ${m.color}30`, `0 0 0 0 ${m.color}00`] }}
+                      transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.4 }}
+                      className="w-7 h-7 rounded-full border-2 flex items-center justify-center"
+                      style={{ borderColor: m.color, background: `${m.color}15` }}
+                    >
+                      {i === MILESTONES.length - 1
+                        ? <Flag className="w-3 h-3" style={{ color: m.color }} />
+                        : <div className="w-2 h-2 rounded-full" style={{ background: m.color }} />
+                      }
+                    </motion.div>
+                  </div>
+
+                  {/* Period + label */}
+                  <div className="text-[10px] font-mono text-white/30 mb-0.5">{m.period}</div>
+                  <div className="text-sm font-bold mb-1" style={{ color: m.color }}>{m.label}</div>
+                  <div className="text-xl font-black text-white font-mono mb-3">{m.cumulative}</div>
+
+                  {/* Progress bar */}
+                  <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden mb-3">
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{ background: m.color }}
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${m.bar}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: 0.3 + i * 0.1 }}
+                    />
+                  </div>
+
+                  {/* Drivers */}
+                  <ul className="space-y-1 text-left w-full">
+                    {m.drivers.map(d => (
+                      <li key={d} className="flex items-start gap-1.5 text-[10px] text-white/35">
+                        <div className="w-1 h-1 rounded-full shrink-0 mt-1.5" style={{ background: m.color }} />
+                        {d}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Footnote */}
+          <p className="text-center text-[11px] font-mono text-white/20 mt-8">
+            Conservative projection · Nigeria operations only · Pan-African expansion adds further upside ·
+            Not financial advice · Based on current revenue model and publicly available market data
+          </p>
         </motion.div>
       </div>
     </section>
