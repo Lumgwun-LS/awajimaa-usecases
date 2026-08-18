@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Stethoscope, Video, FileHeart, Shield, Wifi,
   Lock, Activity, Building2, ChevronRight,
   AlertCircle, CheckCircle2, UserCheck, Brain,
+  Navigation2, Users, Truck, Radio, MapPin, Zap, Target,
+  AlertTriangle, ChevronDown,
 } from 'lucide-react';
 
 /* ─── Hospital nodes on the network map ─────────────────────────────────── */
@@ -33,6 +35,47 @@ const TIER_STYLE = {
   general:  { r: 3.5, fill: '#6366f1', stroke: '#6366f1', glow: 'rgba(99,102,241,0.4)' },
   primary:  { r: 2.5, fill: '#34d399', stroke: '#34d399', glow: 'rgba(52,211,153,0.35)' },
 };
+
+/* ─── State command dashboard data ─────────────────────────────────────── */
+const EMERGENCY_TYPES = [
+  { id: 'cholera',   label: 'Cholera Outbreak',   icon: '🦠', color: '#f43f5e', severity: 'CRITICAL', lgasAffected: 4 },
+  { id: 'casualty',  label: 'Mass Casualty',       icon: '🚨', color: '#fb923c', severity: 'HIGH',     lgasAffected: 2 },
+  { id: 'flood',     label: 'Flood Emergency',     icon: '🌊', color: '#60a5fa', severity: 'HIGH',     lgasAffected: 6 },
+  { id: 'fire',      label: 'Wildfire / Explosion',icon: '🔥', color: '#fbbf24', severity: 'MODERATE', lgasAffected: 1 },
+  { id: 'epidemic',  label: 'Epidemic Alert',      icon: '⚠️', color: '#a78bfa', severity: 'WATCH',    lgasAffected: 8 },
+];
+
+type AssetStatus = { standby: number; deployed: number; total: number };
+const INITIAL_ASSETS: Record<string, AssetStatus & { label: string; icon: string; color: string; unit: string }> = {
+  ambulances: { label: 'Ambulances',      icon: '🚑', color: '#f43f5e', total: 50, standby: 38, deployed: 12, unit: 'units' },
+  drones:     { label: 'Recon Drones',    icon: '🚁', color: '#60a5fa', total: 12, standby: 7,  deployed:  5, unit: 'drones' },
+  teams:      { label: 'RRTF Teams',      icon: '👥', color: '#34d399', total:  8, standby: 6,  deployed:  2, unit: 'teams' },
+  field:      { label: 'Field Med Units', icon: '🏥', color: '#fbbf24', total:  6, standby: 6,  deployed:  0, unit: 'units' },
+};
+
+const DEPLOY_AMOUNTS: Record<string, number> = { ambulances: 6, drones: 2, teams: 1, field: 2 };
+
+type LogEntry = { time: string; msg: string; color: string };
+const INITIAL_LOG: LogEntry[] = [
+  { time: '14:32:07', msg: '12 Ambulances deployed → Mushin, Oshodi, Ajegunle', color: '#f43f5e' },
+  { time: '14:31:44', msg: 'Drone recon unit #3 scanning Apapa corridor',        color: '#60a5fa' },
+  { time: '14:30:12', msg: 'RRTF Team Alpha en route → Mushin Primary School',   color: '#34d399' },
+];
+
+/* ─── Zone dots for the outbreak map ───────────────────────────────────── */
+const OUTBREAK_ZONES = [
+  { x: 22, y: 62, r: 8,   label: 'Mushin',    severity: 'CRITICAL' },
+  { x: 30, y: 68, r: 5.5, label: 'Oshodi',    severity: 'HIGH' },
+  { x: 18, y: 75, r: 6,   label: 'Ajegunle',  severity: 'HIGH' },
+  { x: 38, y: 72, r: 4,   label: 'Surulere',  severity: 'MODERATE' },
+];
+
+const ASSET_DOTS = [
+  { x: 25, y: 65, type: 'ambulance', label: 'AMB-07' },
+  { x: 20, y: 70, type: 'ambulance', label: 'AMB-12' },
+  { x: 32, y: 63, type: 'drone',     label: 'DR-03' },
+  { x: 18, y: 60, type: 'team',      label: 'RRTF-A' },
+];
 
 /* ─── Emergency scenario steps ──────────────────────────────────────────── */
 const EMERGENCY_STEPS = [
@@ -134,6 +177,40 @@ function RecordPacket({ from, to, delay }: { from: { x: number; y: number }; to:
 export function HealthEmergency() {
   const [activeStep, setActiveStep] = useState(0);
   const [autoRun, setAutoRun] = useState(true);
+
+  /* ── Command dashboard state ────────────────────────────────────────── */
+  const [activeEmergency, setActiveEmergency] = useState(0);
+  const [assets, setAssets] = useState(INITIAL_ASSETS);
+  const [log, setLog] = useState<LogEntry[]>(INITIAL_LOG);
+  const [deploying, setDeploying] = useState<string | null>(null);
+
+  const now = () => {
+    const d = new Date();
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+  };
+
+  const handleDeploy = useCallback((key: string) => {
+    const a = assets[key];
+    if (a.standby <= 0 || deploying) return;
+    const qty = Math.min(DEPLOY_AMOUNTS[key] ?? 1, a.standby);
+    setDeploying(key);
+    setTimeout(() => {
+      setAssets(prev => ({
+        ...prev,
+        [key]: { ...prev[key], standby: prev[key].standby - qty, deployed: prev[key].deployed + qty },
+      }));
+      const et = EMERGENCY_TYPES[activeEmergency];
+      const msgs: Record<string, string> = {
+        ambulances: `${qty} Ambulance${qty > 1 ? 's' : ''} dispatched → ${et.label} zone`,
+        drones:     `${qty} Drone${qty > 1 ? 's' : ''} airborne — scanning outbreak perimeter`,
+        teams:      `${qty} RRTF Team${qty > 1 ? 's' : ''} mobilised → field staging area`,
+        field:      `${qty} Field Medical Unit${qty > 1 ? 's' : ''} deployed with PPE kit`,
+      };
+      const colors: Record<string, string> = { ambulances: '#f43f5e', drones: '#60a5fa', teams: '#34d399', field: '#fbbf24' };
+      setLog(prev => [{ time: now(), msg: msgs[key] ?? `${qty} units deployed`, color: colors[key] ?? '#fff' }, ...prev.slice(0, 4)]);
+      setDeploying(null);
+    }, 900);
+  }, [assets, deploying, activeEmergency]);
 
   useEffect(() => {
     if (!autoRun) return;
@@ -359,6 +436,286 @@ export function HealthEmergency() {
             ))}
           </motion.div>
         </div>
+
+        {/* ── State Emergency Command Dashboard ───────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.05 }}
+          transition={{ duration: 0.7 }}
+          className="mb-24"
+        >
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/25 bg-orange-500/8 text-orange-400 text-xs font-mono tracking-widest mb-4 uppercase">
+              <Radio className="w-3.5 h-3.5" /> For Subscribing State Governments
+            </div>
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+              Deploy the State's Response Assets <br className="hidden md:block" />
+              From One Dashboard.
+            </h3>
+            <p className="text-white/45 text-sm max-w-2xl mx-auto leading-relaxed">
+              When a disease outbreak, flood, or mass-casualty event hits, the state emergency coordinator
+              doesn't make phone calls — they open the Awajimaa State Command Dashboard and dispatch
+              ambulances, drones, and rapid-response teams in seconds.
+            </p>
+          </div>
+
+          {/* Dashboard UI */}
+          <div className="rounded-2xl border border-orange-500/15 bg-[#0d0907] overflow-hidden shadow-[0_0_80px_rgba(251,146,60,0.05)]">
+
+            {/* Chrome bar */}
+            <div className="flex items-center justify-between px-4 py-2.5 bg-[#110b08] border-b border-white/5">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-orange-400" />
+                <span className="text-[11px] font-mono text-orange-400 uppercase tracking-widest">
+                  Awajimaa State Command · Lagos State Emergency Operations Centre
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <motion.div
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1.2, repeat: Infinity }}
+                  className="flex items-center gap-1.5"
+                >
+                  <div className="w-2 h-2 rounded-full bg-red-500" />
+                  <span className="text-[10px] font-mono text-red-400 uppercase">INCIDENT ACTIVE</span>
+                </motion.div>
+                <div className="text-[10px] font-mono text-white/25">07:42:18 WAT</div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-white/5">
+
+              {/* LEFT — Incident type selector */}
+              <div className="p-5 flex flex-col gap-3">
+                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest mb-1">Incident Type</div>
+                {EMERGENCY_TYPES.map((et, i) => (
+                  <button
+                    key={et.id}
+                    onClick={() => setActiveEmergency(i)}
+                    className="flex items-center gap-3 p-3 rounded-xl border text-left transition-all duration-150"
+                    style={{
+                      borderColor: i === activeEmergency ? `${et.color}40` : 'rgba(255,255,255,0.05)',
+                      background:  i === activeEmergency ? `${et.color}10` : 'transparent',
+                    }}
+                  >
+                    <span className="text-lg leading-none">{et.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-semibold text-white truncate">{et.label}</div>
+                      <div className="text-[10px] font-mono mt-0.5" style={{ color: et.color }}>
+                        {et.severity} · {et.lgasAffected} LGA{et.lgasAffected > 1 ? 's' : ''} affected
+                      </div>
+                    </div>
+                    {i === activeEmergency && (
+                      <div className="w-2 h-2 rounded-full shrink-0" style={{ background: et.color }} />
+                    )}
+                  </button>
+                ))}
+
+                {/* Severity strip */}
+                <div className="mt-2 p-3 rounded-xl bg-white/3 border border-white/5">
+                  <div className="text-[10px] font-mono text-white/30 uppercase mb-2">Severity Level</div>
+                  <div className="flex gap-1.5">
+                    {['WATCH','MODERATE','HIGH','CRITICAL'].map(s => {
+                      const active = EMERGENCY_TYPES[activeEmergency].severity === s;
+                      const colors: Record<string,string> = { WATCH:'#a78bfa', MODERATE:'#fbbf24', HIGH:'#fb923c', CRITICAL:'#f43f5e' };
+                      return (
+                        <div key={s} className="flex-1 h-5 rounded flex items-center justify-center text-[8px] font-bold font-mono transition-all"
+                          style={{ background: active ? `${colors[s]}30` : 'rgba(255,255,255,0.04)', color: active ? colors[s] : 'rgba(255,255,255,0.15)', border: `1px solid ${active ? colors[s]+'40' : 'transparent'}` }}>
+                          {s}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* CENTER — Outbreak zone map */}
+              <div className="p-5 flex flex-col">
+                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest mb-3">Affected Zones — Real-time Asset Map</div>
+                <div className="relative flex-1 rounded-xl bg-[#080507] border border-white/5 overflow-hidden" style={{ minHeight: 260 }}>
+                  <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+                    {/* Grid */}
+                    {[20,40,60,80].map(v => (
+                      <g key={v}>
+                        <line x1={v} y1={0} x2={v} y2={100} stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />
+                        <line x1={0} y1={v} x2={100} y2={v} stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />
+                      </g>
+                    ))}
+                    {/* Outbreak zones */}
+                    {OUTBREAK_ZONES.map((z, i) => {
+                      const et = EMERGENCY_TYPES[activeEmergency];
+                      return (
+                        <g key={i}>
+                          <motion.circle cx={z.x} cy={z.y} r={z.r}
+                            fill={`${et.color}12`} stroke={et.color} strokeWidth="0.5"
+                            animate={{ r: [z.r, z.r * 1.15, z.r], opacity: [0.7, 1, 0.7] }}
+                            transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.4 }}
+                          />
+                          <text x={z.x} y={z.y + z.r + 4} fill="rgba(255,255,255,0.45)" fontSize="3.5" textAnchor="middle" fontFamily="monospace">{z.label}</text>
+                          {/* Severity badge */}
+                          <text x={z.x} y={z.y + 1.5} fill={et.color} fontSize="2.8" textAnchor="middle" fontFamily="monospace" fontWeight="bold">
+                            {z.severity === 'CRITICAL' ? '●' : '◐'}
+                          </text>
+                        </g>
+                      );
+                    })}
+                    {/* Asset dots */}
+                    {ASSET_DOTS.map((a, i) => {
+                      const colors: Record<string,string> = { ambulance:'#f43f5e', drone:'#60a5fa', team:'#34d399' };
+                      const shapes: Record<string,string> = { ambulance:'🚑', drone:'▲', team:'⬟' };
+                      return (
+                        <g key={i}>
+                          <motion.circle cx={a.x} cy={a.y} r={2.2}
+                            fill={colors[a.type] ?? '#fff'}
+                            animate={{ cy: [a.y, a.y - 2, a.y] }}
+                            transition={{ duration: 3, repeat: Infinity, delay: i * 0.7, ease: 'easeInOut' }}
+                          />
+                          <text x={a.x + 2.8} y={a.y + 1} fill="rgba(255,255,255,0.4)" fontSize="2.8" fontFamily="monospace">{a.label}</text>
+                        </g>
+                      );
+                    })}
+                  </svg>
+
+                  {/* Legend */}
+                  <div className="absolute bottom-2 left-2 flex flex-col gap-1">
+                    {[{c:'#f43f5e',l:'Ambulance'},{c:'#60a5fa',l:'Drone'},{c:'#34d399',l:'RRTF Team'}].map(({c,l}) => (
+                      <div key={l} className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-full" style={{background:c}} />
+                        <span className="text-[8px] font-mono text-white/35">{l}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Live pulse top-right */}
+                  <motion.div animate={{ opacity:[1,0.4,1] }} transition={{ duration:1.5,repeat:Infinity }}
+                    className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/15 border border-orange-500/25">
+                    <Target className="w-3 h-3 text-orange-400" />
+                    <span className="text-[9px] font-mono text-orange-400">TRACKING LIVE</span>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* RIGHT — Asset inventory + deploy buttons */}
+              <div className="p-5 flex flex-col gap-3">
+                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest mb-1">Response Assets</div>
+
+                {Object.entries(assets).map(([key, a]) => {
+                  const pct = Math.round((a.deployed / a.total) * 100);
+                  const canDeploy = a.standby > 0;
+                  return (
+                    <div key={key} className="p-3 rounded-xl bg-white/3 border border-white/5">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base leading-none">{a.icon}</span>
+                          <span className="text-xs font-semibold text-white">{a.label}</span>
+                        </div>
+                        <span className="text-[10px] font-mono text-white/30">{a.deployed}/{a.total}</span>
+                      </div>
+
+                      {/* Progress bar */}
+                      <div className="h-1 bg-white/8 rounded-full overflow-hidden mb-2">
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{ background: a.color }}
+                          animate={{ width: `${pct}%` }}
+                          transition={{ duration: 0.5 }}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="text-[9px] font-mono text-white/30">
+                          <span style={{ color: a.color }}>{a.standby}</span> standby · {a.deployed} deployed
+                        </div>
+                        <button
+                          onClick={() => handleDeploy(key)}
+                          disabled={!canDeploy || deploying === key}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold font-mono transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+                          style={{
+                            background: canDeploy ? `${a.color}25` : 'rgba(255,255,255,0.05)',
+                            border: `1px solid ${canDeploy ? a.color + '50' : 'rgba(255,255,255,0.08)'}`,
+                            color: canDeploy ? a.color : 'rgba(255,255,255,0.25)',
+                          }}
+                        >
+                          {deploying === key ? (
+                            <motion.span animate={{ opacity:[1,0.3,1] }} transition={{ duration:0.6,repeat:Infinity }}>DEPLOYING…</motion.span>
+                          ) : (
+                            <><Zap className="w-3 h-3" /> DEPLOY {DEPLOY_AMOUNTS[key]}</>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Total summary */}
+                <div className="mt-1 p-3 rounded-xl border border-white/5 bg-white/2">
+                  <div className="text-[10px] font-mono text-white/30 mb-2">Total Assets Deployed</div>
+                  <div className="text-2xl font-bold text-white font-mono">
+                    {Object.values(assets).reduce((s,a) => s + a.deployed, 0)}
+                    <span className="text-sm font-normal text-white/30 ml-1">
+                      / {Object.values(assets).reduce((s,a) => s + a.total, 0)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Deployment log */}
+            <div className="border-t border-white/5 bg-[#0a0806]">
+              <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5">
+                <Radio className="w-3.5 h-3.5 text-white/25" />
+                <span className="text-[10px] font-mono text-white/25 uppercase tracking-widest">Deployment Log — Real-time</span>
+              </div>
+              <div className="px-4 py-3 space-y-2">
+                <AnimatePresence>
+                  {log.map((entry, i) => (
+                    <motion.div
+                      key={`${entry.time}-${i}`}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="flex items-center gap-3"
+                    >
+                      <span className="text-[10px] font-mono text-white/25 shrink-0">{entry.time}</span>
+                      <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: entry.color }} />
+                      <span className="text-[11px] font-mono" style={{ color: i === 0 ? entry.color : 'rgba(255,255,255,0.45)' }}>
+                        {entry.msg}
+                      </span>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+
+          {/* Explainer row */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+            {[
+              { icon: MapPin,   color: '#fb923c', title: 'LGA-Level Targeting',      body: 'Zoom down to local government area resolution. Know exactly which wards are affected and route assets to the right staging points.' },
+              { icon: Navigation2, color: '#60a5fa', title: 'Drone Recon Integration', body: 'Deploy aerial recon units to map the outbreak perimeter, assess flood coverage, or locate casualties in areas ground teams can\'t yet reach.' },
+              { icon: Users,    color: '#34d399', title: 'Multi-Agency Coordination', body: 'State health, military, fire service, and NEMA can all operate from the same dashboard with role-based access — no crossed wires.' },
+            ].map((item, i) => (
+              <motion.div key={item.title}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="flex gap-3 p-4 rounded-xl bg-white/2 border border-white/5"
+              >
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                  style={{ background: `${item.color}15`, border: `1px solid ${item.color}25` }}>
+                  <item.icon className="w-4 h-4" style={{ color: item.color }} />
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-white mb-1">{item.title}</div>
+                  <div className="text-[11px] text-white/40 leading-relaxed">{item.body}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
         {/* ── Emergency Scenario Walkthrough ──────────────────────────────── */}
         <motion.div
