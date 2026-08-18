@@ -12,6 +12,7 @@ import { InsuranceFinance } from '@/components/sections/insurance-finance';
 import { RealEstate } from '@/components/sections/real-estate';
 import { Awards } from '@/components/sections/awards';
 import { RevenueModel } from '@/components/sections/revenue-model';
+import { AwajimaGroup } from '@/components/sections/awajimaa-group';
 import { InvestorScale } from '@/components/sections/investor';
 import { AwaBizSuite } from '@/components/sections/awa-biz-suite';
 import { AppStore } from '@/components/sections/app-store';
@@ -40,6 +41,7 @@ export default function Home() {
         <Awards />
       </div>
       <div id="revenue"><RevenueModel /></div>
+      <AwajimaGroup />
       <div id="investors"><InvestorScale /></div>
       <div id="videos"><VideoShowcase /></div>
       <div id="platforms">
