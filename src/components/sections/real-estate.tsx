@@ -4,14 +4,47 @@ import {
   Building2, Home, DollarSign, Users, Video, Shield,
   MapPin, Navigation, Eye, Bell, CheckCircle2, Clock,
   Key, Wifi, ChevronRight, LayoutDashboard, Calendar,
-  Camera, AlertCircle, Star, ArrowRight,
+  Camera, AlertCircle, Star, ArrowRight, Wrench,
+  ClipboardList, Hammer, TriangleAlert,
 } from 'lucide-react';
 
 /* ─── Landlord properties ───────────────────────────────────────────────── */
 const PROPERTIES = [
-  { id: 'P001', name: 'Lekki Pearl Estate', type: '16-unit Apartment Block', location: 'Lekki Phase 1, Lagos', units: 16, occupied: 14, rent: '₦450,000/mo', arrears: 1, color: '#6366f1' },
-  { id: 'P002', name: 'Victoria Gardens',   type: '6 Terrace Houses',        location: 'Victoria Island, Lagos',units:  6, occupied:  6, rent: '₦780,000/mo', arrears: 0, color: '#34d399' },
-  { id: 'P003', name: 'Abuja Highrise',     type: '24-unit Serviced Apt',    location: 'Maitama, Abuja',       units: 24, occupied: 19, rent: '₦320,000/mo', arrears: 3, color: '#fb923c' },
+  { id: 'P001', name: 'Lekki Pearl Estate', type: '16-unit Apartment Block', location: 'Lekki Phase 1, Lagos', units: 16, occupied: 14, rent: '₦450,000/mo', arrears: 1, maintenance: 2, color: '#6366f1' },
+  { id: 'P002', name: 'Victoria Gardens',   type: '6 Terrace Houses',        location: 'Victoria Island, Lagos',units:  6, occupied:  6, rent: '₦780,000/mo', arrears: 0, maintenance: 0, color: '#34d399' },
+  { id: 'P003', name: 'Abuja Highrise',     type: '24-unit Serviced Apt',    location: 'Maitama, Abuja',       units: 24, occupied: 19, rent: '₦320,000/mo', arrears: 3, maintenance: 4, color: '#fb923c' },
+];
+
+/* ─── Maintenance requests ──────────────────────────────────────────────── */
+const MAINTENANCE = [
+  {
+    id: 'M001', unit: 'A3', tenant: 'Mr Tunde R.',
+    issue: 'AC unit not cooling — compressor fault',
+    category: 'HVAC', priority: 'HIGH',
+    reported: 'Aug 16', status: 'IN PROGRESS',
+    assignee: 'CoolTech Services', eta: 'Today 4 PM',
+  },
+  {
+    id: 'M002', unit: 'B7', tenant: 'Mrs Amaka O.',
+    issue: 'Roof leak above master bedroom after rain',
+    category: 'Structural', priority: 'URGENT',
+    reported: 'Aug 18', status: 'PENDING',
+    assignee: '—', eta: 'Awaiting assignment',
+  },
+  {
+    id: 'M003', unit: 'C2', tenant: 'Dr Emeka N.',
+    issue: 'Gate remote not responding',
+    category: 'Security', priority: 'LOW',
+    reported: 'Aug 15', status: 'RESOLVED',
+    assignee: 'Estate Security', eta: 'Fixed Aug 16',
+  },
+  {
+    id: 'M004', unit: 'A9', tenant: 'Ms Bisi F.',
+    issue: 'Water heater not producing hot water',
+    category: 'Plumbing', priority: 'MEDIUM',
+    reported: 'Aug 17', status: 'SCHEDULED',
+    assignee: 'AquaFix Ltd', eta: 'Aug 19, 10 AM',
+  },
 ];
 
 /* ─── Visitor log ───────────────────────────────────────────────────────── */
@@ -32,12 +65,13 @@ const RENT_ROWS = [
 
 /* ─── Features ──────────────────────────────────────────────────────────── */
 const FEATURES = [
-  { icon: LayoutDashboard, color: '#6366f1', title: 'Estate Management Dashboard', desc: 'See all your properties, units, occupancy rates, and revenue from one screen. Switch between estates instantly. Flag maintenance requests, vacancies, and lease renewals at a glance.' },
-  { icon: DollarSign,      color: '#34d399', title: 'Digital Rent Collection',      desc: 'Automated payment reminders sent to tenants 7 days before due date. Instant bank transfer, card, or USSD. Receipts generated automatically. Overdue alerts with escalation to the landlord.' },
-  { icon: Users,           color: '#60a5fa', title: 'Visitor Management',            desc: 'Tenants pre-register guests via the app. Security scans QR codes at the gate. Time-stamped entry and exit log. Unexpected visitors flagged to the landlord and tenant instantly.' },
-  { icon: Video,           color: '#a78bfa', title: 'Virtual Tenant Meetings',       desc: 'Hold rent review meetings, handle complaints, and conduct lease renewals over video — without either party needing to travel. Recordings stored for dispute resolution.' },
-  { icon: Shield,          color: '#f43f5e', title: 'Security & Access Control',     desc: 'Guard duty shift logs. Incident reporting with photo evidence. Real-time alert to landlord on any security event. Digital access control for gates and common areas.' },
-  { icon: Camera,          color: '#fb923c', title: 'Listing & Virtual Tours',       desc: 'Post vacant units with photos, floor plans, and a 360° virtual tour or video walkthrough. Prospective tenants browse and shortlist before ever leaving home.' },
+  { icon: LayoutDashboard, color: '#6366f1', title: 'Estate Management Dashboard',   desc: 'See all your properties, units, occupancy rates, and revenue from one screen. Switch between estates instantly. Flag maintenance requests, vacancies, and lease renewals at a glance.' },
+  { icon: DollarSign,      color: '#34d399', title: 'Digital Rent Collection',        desc: 'Automated payment reminders sent to tenants 7 days before due date. Instant bank transfer, card, or USSD. Receipts generated automatically. Overdue alerts with escalation to the landlord.' },
+  { icon: Wrench,          color: '#f59e0b', title: 'Maintenance Request & Tracking', desc: 'Tenants log faults from the app — with photo evidence. Landlords assign contractors, set ETAs, and track every job from PENDING to RESOLVED. Priority levels: Urgent, High, Medium, Low.' },
+  { icon: Users,           color: '#60a5fa', title: 'Visitor Management',              desc: 'Tenants pre-register guests via the app. Security scans QR codes at the gate. Time-stamped entry and exit log. Unexpected visitors flagged to the landlord and tenant instantly.' },
+  { icon: Video,           color: '#a78bfa', title: 'Virtual Tenant Meetings',         desc: 'Hold rent review meetings, handle complaints, and conduct lease renewals over video — without either party needing to travel. Recordings stored for dispute resolution.' },
+  { icon: Shield,          color: '#f43f5e', title: 'Security & Access Control',       desc: 'Guard duty shift logs. Incident reporting with photo evidence. Real-time alert to landlord on any security event. Digital access control for gates and common areas.' },
+  { icon: Camera,          color: '#fb923c', title: 'Listing & Virtual Tours',         desc: 'Post vacant units with photos, floor plans, and a 360° virtual tour or video walkthrough. Prospective tenants browse and shortlist before ever leaving home.' },
 ];
 
 /* ─── Listing preview ───────────────────────────────────────────────────── */
@@ -60,7 +94,7 @@ const NAV_STEPS = [
 
 export function RealEstate() {
   const [activeProp, setActiveProp] = useState(0);
-  const [activeTab, setActiveTab] = useState<'rent' | 'visitors' | 'security'>('rent');
+  const [activeTab, setActiveTab] = useState<'rent' | 'visitors' | 'security' | 'maintenance'>('rent');
   const [navStep, setNavStep] = useState(0);
 
   useEffect(() => {
@@ -97,7 +131,8 @@ export function RealEstate() {
             </span>
           </h2>
           <p className="text-white/55 text-lg max-w-2xl mx-auto leading-relaxed">
-            Landlords manage their entire estate portfolio from one dashboard — rents, visitors, security, and meetings.
+            Landlords manage their entire estate portfolio from one dashboard — rents, maintenance jobs, visitors, security, and meetings.
+            Tenants log faults from their phones; landlords assign contractors and track every job to resolution.
             Prospective tenants take virtual tours, then let the app navigate them to the property for a physical inspection.
           </p>
         </motion.div>
@@ -153,10 +188,10 @@ export function RealEstate() {
                 >
                   <div className="grid grid-cols-4 divide-x divide-white/5 border-b border-white/5">
                     {[
-                      { label: 'Units',    value: `${prop.units}`,                  sub: 'total' },
-                      { label: 'Occupied', value: `${prop.occupied}`,               sub: `${Math.round((prop.occupied/prop.units)*100)}%` },
-                      { label: 'Rent',     value: prop.rent,                        sub: 'per unit' },
-                      { label: 'Arrears',  value: `${prop.arrears}`,                sub: 'tenants', warn: prop.arrears > 0 },
+                      { label: 'Units',       value: `${prop.units}`,                  sub: 'total' },
+                      { label: 'Occupied',    value: `${prop.occupied}`,               sub: `${Math.round((prop.occupied/prop.units)*100)}%` },
+                      { label: 'Arrears',     value: `${prop.arrears}`,                sub: 'tenants', warn: prop.arrears > 0 },
+                      { label: 'Maintenance', value: `${prop.maintenance}`,            sub: 'open jobs', warn: prop.maintenance > 0 },
                     ].map(({ label, value, sub, warn }) => (
                       <div key={label} className="px-3 py-3 text-center">
                         <div className={`text-base font-bold font-mono ${warn ? 'text-red-400' : 'text-white'}`}>{value}</div>
@@ -168,14 +203,17 @@ export function RealEstate() {
 
                   {/* Tab bar */}
                   <div className="flex gap-0 border-b border-white/5">
-                    {(['rent', 'visitors', 'security'] as const).map(tab => (
+                    {(['rent', 'visitors', 'security', 'maintenance'] as const).map(tab => (
                       <button key={tab} onClick={() => setActiveTab(tab)}
-                        className="flex-1 py-2 text-[10px] font-mono uppercase tracking-widest transition-colors border-b-2"
+                        className="flex-1 py-2 text-[10px] font-mono uppercase tracking-widest transition-colors border-b-2 relative"
                         style={{
                           color: activeTab === tab ? prop.color : 'rgba(255,255,255,0.25)',
                           borderBottomColor: activeTab === tab ? prop.color : 'transparent',
                         }}>
-                        {tab}
+                        {tab === 'maintenance' ? 'jobs' : tab}
+                        {tab === 'maintenance' && prop.maintenance > 0 && (
+                          <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-amber-400" />
+                        )}
                       </button>
                     ))}
                   </div>
@@ -253,6 +291,67 @@ export function RealEstate() {
                           ))}
                         </div>
                       )}
+
+                      {activeTab === 'maintenance' && (
+                        <div>
+                          <div className="divide-y divide-white/4">
+                            {MAINTENANCE.map(m => {
+                              const priorityColor = {
+                                URGENT: '#f43f5e', HIGH: '#fb923c',
+                                MEDIUM: '#f59e0b', LOW: '#60a5fa',
+                              }[m.priority]!;
+                              const statusColor = {
+                                'IN PROGRESS': '#a78bfa', PENDING: '#fb923c',
+                                RESOLVED: '#34d399', SCHEDULED: '#60a5fa',
+                              }[m.status]!;
+                              return (
+                                <div key={m.id} className="px-4 py-3">
+                                  <div className="flex items-start justify-between gap-3 mb-1.5">
+                                    <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                                      <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0 mt-0.5"
+                                        style={{ background: `${priorityColor}18`, border: `1px solid ${priorityColor}25` }}>
+                                        <Wrench className="w-3 h-3" style={{ color: priorityColor }} />
+                                      </div>
+                                      <div className="min-w-0">
+                                        <div className="text-xs font-medium text-white leading-snug">{m.issue}</div>
+                                        <div className="text-[10px] text-white/30 font-mono mt-0.5">
+                                          Unit {m.unit} · {m.tenant} · {m.category}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                      <span className="px-1.5 py-0.5 rounded text-[8px] font-bold font-mono uppercase"
+                                        style={{ color: priorityColor, background: `${priorityColor}15` }}>
+                                        {m.priority}
+                                      </span>
+                                      <span className="px-1.5 py-0.5 rounded text-[8px] font-mono uppercase"
+                                        style={{ color: statusColor, background: `${statusColor}12` }}>
+                                        {m.status}
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center justify-between pl-8">
+                                    <div className="flex items-center gap-1 text-[10px] text-white/25 font-mono">
+                                      <Hammer className="w-2.5 h-2.5" />
+                                      {m.assignee}
+                                    </div>
+                                    <div className="flex items-center gap-1 text-[10px] font-mono"
+                                      style={{ color: m.status === 'RESOLVED' ? '#34d399' : 'rgba(255,255,255,0.25)' }}>
+                                      <Clock className="w-2.5 h-2.5" />
+                                      {m.eta}
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          <div className="px-4 py-2.5 border-t border-white/5 bg-[#090b16]">
+                            <button className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-indigo-500/20 bg-indigo-500/8 text-[11px] font-bold text-indigo-300 hover:bg-indigo-500/15 transition-colors">
+                              <ClipboardList className="w-3.5 h-3.5" /> Log New Maintenance Request
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </motion.div>
                   </AnimatePresence>
                 </motion.div>
@@ -261,9 +360,10 @@ export function RealEstate() {
               {/* Quick actions */}
               <div className="flex gap-2 px-4 py-3 border-t border-white/5 bg-[#090b16]">
                 {[
-                  { icon: DollarSign, label: 'Send Reminder', color: '#34d399' },
-                  { icon: Video,      label: 'Start Meeting',  color: '#a78bfa' },
-                  { icon: Key,        label: 'Issue Access',   color: '#60a5fa' },
+                  { icon: DollarSign, label: 'Rent Reminder', color: '#34d399' },
+                  { icon: Wrench,     label: 'New Job',        color: '#f59e0b' },
+                  { icon: Video,      label: 'Meeting',        color: '#a78bfa' },
+                  { icon: Key,        label: 'Access',         color: '#60a5fa' },
                   { icon: Bell,       label: 'Alert Tenant',   color: '#fb923c' },
                 ].map(a => (
                   <button key={a.label}
