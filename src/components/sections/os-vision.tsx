@@ -5,7 +5,7 @@ const features = [
   { icon: Shield, title: "Emergency & Health", desc: "Ambulance dispatch, tele-health, and real-time state emergency analytics." },
   { icon: Zap, title: "Energy & Security", desc: "Oil spill reporting, drone surveillance, and response team coordination." },
   { icon: Globe, title: "Commerce & Logistics", desc: "Cross-border trading, multi-vendor fleet tracking, and marketplace deals." },
-  { icon: Layers, title: "Identity & Finance", desc: "BVN/NIN verification, multi-currency wallets, insurance, and group savings." },
+  { icon: Layers, title: "Identity & Finance", desc: "Marketplace business deal processing, Group savings, and multi-currency payments." },
 ];
 
 export function OsVision() {
