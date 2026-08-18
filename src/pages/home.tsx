@@ -9,6 +9,7 @@ import { HealthEmergency } from '@/components/sections/health-emergency';
 import { Marketplace } from '@/components/sections/marketplace';
 import { Logistics } from '@/components/sections/logistics';
 import { InsuranceFinance } from '@/components/sections/insurance-finance';
+import { RevenueModel } from '@/components/sections/revenue-model';
 import { InvestorScale } from '@/components/sections/investor';
 import { AwaBizSuite } from '@/components/sections/awa-biz-suite';
 import { AppStore } from '@/components/sections/app-store';
@@ -34,6 +35,7 @@ export default function Home() {
         <Logistics />
         <InsuranceFinance />
       </div>
+      <div id="revenue"><RevenueModel /></div>
       <div id="investors"><InvestorScale /></div>
       <div id="videos"><VideoShowcase /></div>
       <div id="platforms">
