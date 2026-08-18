@@ -122,7 +122,7 @@ const STREAMS = [
     how: 'Annual subscription gives operators an early-warning system for spills, a tamper-evident regulatory compliance trail, managed incident dashboards, and a community relations channel — all before a spill makes the news.',
     rate: '$120K – $400K / operator / year',
     rateNote: '40% of the fee funds community reporter token payouts, driving platform engagement.',
-    potential: '$480M+ from Nigeria's 30+ licensed upstream operators alone',
+    potential: '$480M+ from Nigeria\'s 30+ licensed upstream operators alone',
     why: [
       'One major spill media incident costs operators $10M+ in PR damage — the subscription is cheap insurance',
       'NOSDRA reporting compliance is legally required — the platform makes it effortless',
