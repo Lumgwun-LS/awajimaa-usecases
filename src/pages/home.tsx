@@ -33,13 +33,13 @@ export default function Home() {
         <InsuranceFinance />
       </div>
       <div id="investors"><InvestorScale /></div>
+      <div id="videos"><VideoShowcase /></div>
       <div id="platforms">
         <AwaBizSuite />
         <AppStore />
         <GenHal />
         <Schools />
       </div>
-      <div id="videos"><VideoShowcase /></div>
       <Ecosystem />
       <Footer />
     </div>
