@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { Play, X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { Play, Pause, X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 
 const videos = [
   {
@@ -155,17 +155,34 @@ function TiltCard({ children, className }: { children: React.ReactNode; classNam
 export function VideoShowcase() {
   const [active, setActive] = useState(0);
   const [modal, setModal] = useState<number | null>(null);
-  const [paused, setPaused] = useState(false);
+  // videoPaused: user explicitly paused the inline player
+  const [videoPaused, setVideoPaused] = useState(false);
+  // sliderHovered: mouse is over the slider — pauses auto-advance
+  const [sliderHovered, setSliderHovered] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval>>();
 
-  const next = useCallback(() => setActive(i => (i + 1) % videos.length), []);
-  const prev = useCallback(() => setActive(i => (i - 1 + videos.length) % videos.length), []);
+  const next = useCallback(() => {
+    setActive(i => (i + 1) % videos.length);
+    setVideoPaused(false); // new slide always auto-plays
+  }, []);
+  const prev = useCallback(() => {
+    setActive(i => (i - 1 + videos.length) % videos.length);
+    setVideoPaused(false);
+  }, []);
 
+  // Jump to slide — also resets play state
+  const goTo = useCallback((i: number) => {
+    setActive(i);
+    setVideoPaused(false);
+  }, []);
+
+  // Auto-advance only when: video is paused by user OR slider is not hovered,
+  // AND the modal is closed. While the inline video plays, let it run uninterrupted.
   useEffect(() => {
-    if (paused || modal !== null) return;
+    if (!videoPaused || sliderHovered || modal !== null) return;
     timerRef.current = setInterval(next, 5500);
     return () => clearInterval(timerRef.current);
-  }, [paused, modal, next]);
+  }, [videoPaused, sliderHovered, modal, next]);
 
   const v = videos[active];
 
@@ -210,8 +227,8 @@ export function VideoShowcase() {
         {/* Slider */}
         <div
           className="relative"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
+          onMouseEnter={() => setSliderHovered(true)}
+          onMouseLeave={() => setSliderHovered(false)}
         >
           {/* Featured card */}
           <AnimatePresence mode="wait">
@@ -222,66 +239,128 @@ export function VideoShowcase() {
               exit={{ opacity: 0, x: -60, scale: 0.97 }}
               transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
             >
-              <TiltCard className="max-w-5xl mx-auto">
-                <div className={`relative rounded-2xl overflow-hidden bg-gradient-to-br ${v.gradient} border border-white/10 shadow-[0_0_80px_rgba(0,0,0,0.8)]`}
-                  style={{ aspectRatio: '16/7' }}>
+              {/* When playing: no 3D tilt (mouse events captured by iframe) */}
+              <div className="max-w-5xl mx-auto">
+                <div
+                  className={`relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(0,0,0,0.8)]`}
+                  style={{ aspectRatio: '16/9', background: '#000' }}
+                >
+                  {/* ── INLINE VIDEO (auto-plays, keyed so changing slide kills audio) ── */}
+                  <AnimatePresence mode="wait">
+                    {!videoPaused ? (
+                      <motion.div
+                        key={`playing-${v.path}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.22 }}
+                        className="absolute inset-0"
+                      >
+                        <iframe
+                          key={v.path}
+                          src={v.path}
+                          title={v.title}
+                          className="w-full h-full"
+                          allow="autoplay"
+                        />
+                      </motion.div>
+                    ) : (
+                      /* ── PAUSED STATE: gradient preview card ── */
+                      <motion.div
+                        key={`paused-${v.path}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.22 }}
+                        className={`absolute inset-0 bg-gradient-to-br ${v.gradient} flex items-center justify-center`}
+                      >
+                        {/* Background emoji */}
+                        <div className="absolute inset-0 flex items-center justify-center text-[200px] opacity-5 select-none pointer-events-none">
+                          {v.icon}
+                        </div>
+                        {/* Scanlines */}
+                        <div className="absolute inset-0 pointer-events-none"
+                          style={{ background: 'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px)' }} />
+                        {/* Big resume button */}
+                        <button
+                          onClick={() => setVideoPaused(false)}
+                          className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center border-2 border-white/30 bg-black/40 backdrop-blur-sm hover:scale-110 transition-transform"
+                          style={{ boxShadow: `0 0 40px ${v.glow}` }}
+                        >
+                          <Play className="w-8 h-8 text-white fill-white ml-1" />
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
-                  {/* Background emoji / ambient */}
-                  <div className="absolute inset-0 flex items-center justify-center text-[200px] opacity-5 select-none pointer-events-none">
-                    {v.icon}
-                  </div>
-
-                  {/* Scanline overlay */}
-                  <div className="absolute inset-0 pointer-events-none"
-                    style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px)' }} />
-
-                  {/* Content */}
-                  <div className="absolute inset-0 flex flex-col justify-between p-8 md:p-12">
-                    <div className="flex items-start justify-between">
+                  {/* ── OVERLAY: always visible controls on top of the iframe ── */}
+                  <div className="absolute inset-0 pointer-events-none z-10">
+                    {/* Top bar: tags + icon + pause button */}
+                    <div className="absolute top-0 left-0 right-0 flex items-start justify-between p-4 pointer-events-auto"
+                      style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, transparent 100%)' }}
+                    >
                       <div className="flex gap-2 flex-wrap">
                         {v.tags.map(t => (
-                          <span key={t} className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-white/20 bg-white/10 text-white/70 uppercase tracking-wider">
+                          <span key={t} className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/20 bg-black/40 backdrop-blur-sm text-white/80 uppercase tracking-wider">
                             {t}
                           </span>
                         ))}
                       </div>
-                      <span className="text-4xl">{v.icon}</span>
-                    </div>
-
-                    <div>
-                      <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-2">{v.subtitle}</p>
-                      <h3 className="text-3xl md:text-5xl font-bold text-white mb-3">{v.title}</h3>
-                      <p className="text-white/60 text-sm md:text-base max-w-lg leading-relaxed mb-6">{v.desc}</p>
-
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        {/* Pause / Resume toggle */}
                         <button
-                          onClick={() => setModal(active)}
-                          className="group flex items-center gap-2.5 h-12 px-6 rounded-xl font-semibold text-sm transition-all duration-200 text-black hover:scale-105"
-                          style={{ background: v.accent }}
+                          onClick={() => setVideoPaused(p => !p)}
+                          className="w-9 h-9 rounded-full bg-black/50 border border-white/20 backdrop-blur-sm hover:bg-black/70 transition-colors flex items-center justify-center text-white"
+                          title={videoPaused ? 'Resume' : 'Pause'}
                         >
-                          <Play className="w-4 h-4 fill-current" />
-                          Watch Now
+                          {videoPaused
+                            ? <Play className="w-4 h-4 fill-white ml-0.5" />
+                            : <Pause className="w-4 h-4 fill-white" />
+                          }
                         </button>
+                        {/* Fullscreen */}
                         <button
                           onClick={() => setModal(active)}
-                          className="h-12 w-12 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center text-white/60 hover:text-white"
+                          className="w-9 h-9 rounded-full bg-black/50 border border-white/20 backdrop-blur-sm hover:bg-black/70 transition-colors flex items-center justify-center text-white"
+                          title="Fullscreen"
                         >
                           <Maximize2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
+
+                    {/* Bottom bar: title + description (only when paused) */}
+                    <AnimatePresence>
+                      {videoPaused && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 8 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute bottom-0 left-0 right-0 p-6 md:p-10 pointer-events-auto"
+                          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)' }}
+                        >
+                          <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-1">{v.subtitle}</p>
+                          <h3 className="text-2xl md:text-4xl font-bold text-white mb-2">{v.title}</h3>
+                          <p className="text-white/60 text-sm max-w-lg leading-relaxed">{v.desc}</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
 
-                  {/* Animated accent border */}
-                  <motion.div
-                    className="absolute bottom-0 left-0 h-1 rounded-b-2xl"
-                    initial={{ width: '0%' }}
-                    animate={{ width: paused ? undefined : '100%' }}
-                    transition={{ duration: 5.5, ease: 'linear', repeat: Infinity }}
-                    style={{ background: v.accent }}
-                  />
+                  {/* Accent progress bar — only while video is playing */}
+                  {!videoPaused && (
+                    <motion.div
+                      key={`bar-${active}`}
+                      className="absolute bottom-0 left-0 h-1 rounded-b-2xl z-20"
+                      initial={{ width: '0%' }}
+                      animate={{ width: '100%' }}
+                      transition={{ duration: 5.5, ease: 'linear' }}
+                      style={{ background: v.accent }}
+                    />
+                  )}
                 </div>
-              </TiltCard>
+              </div>
             </motion.div>
           </AnimatePresence>
 
@@ -305,7 +384,7 @@ export function VideoShowcase() {
           {videos.map((vid, i) => (
             <button
               key={vid.id}
-              onClick={() => setActive(i)}
+              onClick={() => goTo(i)}
               className={`shrink-0 relative rounded-xl overflow-hidden border transition-all duration-300 ${
                 i === active
                   ? 'border-white/40 scale-105 shadow-lg'
@@ -330,7 +409,7 @@ export function VideoShowcase() {
           {videos.map((_, i) => (
             <button
               key={i}
-              onClick={() => setActive(i)}
+              onClick={() => goTo(i)}
               className="h-1 rounded-full transition-all duration-300"
               style={{
                 width: i === active ? 24 : 6,
