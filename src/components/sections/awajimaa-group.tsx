@@ -93,6 +93,51 @@ export function AwajimaGroup() {
       <div className="absolute inset-0 pointer-events-none opacity-[0.015]"
         style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
 
+      {/* Floating orbs — 4 subsidiary colors */}
+      {[
+        { w: 320, h: 320, top: '5%',  left: '2%',   color: '#f59e0b', delay: 0   },
+        { w: 250, h: 250, top: '50%', right: '3%',  color: '#6366f1', delay: 1.5 },
+        { w: 180, h: 180, top: '28%', left: '78%',  color: '#a78bfa', delay: 3   },
+        { w: 200, h: 200, top: '70%', left: '18%',  color: '#34d399', delay: 2   },
+        { w: 150, h: 150, top: '15%', left: '45%',  color: '#fb923c', delay: 4   },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none z-0"
+          style={{ width: o.w, height: o.h, top: o.top, left: o.left, right: (o as { right?: string }).right,
+            background: `radial-gradient(circle, ${o.color}10 0%, transparent 70%)`,
+            filter: 'blur(40px)' }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Slowly rotating large hexagon outline */}
+      <motion.div
+        className="absolute pointer-events-none z-0"
+        style={{
+          width: 600,
+          height: 600,
+          top: '50%',
+          left: '50%',
+          marginTop: -300,
+          marginLeft: -300,
+          border: '2px solid rgba(245,158,11,0.03)',
+          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+        }}
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+      />
+
+      {/* Flying amber/gold particles */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div key={i}
+          className="absolute w-1 h-1 rounded-full pointer-events-none z-0"
+          style={{ left: `${8 + i * 15}%`, bottom: '10%', background: 'rgba(245,158,11,0.3)' }}
+          animate={{ y: [0, -120, 0], opacity: [0, 0.6, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' }}
+        />
+      ))}
+
       <div className="container mx-auto px-6 relative z-10">
 
         {/* ── Header ─────────────────────────────────────────────────────── */}
@@ -107,12 +152,18 @@ export function AwajimaGroup() {
             <Crown className="w-3.5 h-3.5" /> The Awajimaa Group
           </div>
 
-          <h2 className="text-4xl md:text-7xl font-black text-white mb-6 leading-[1.05] tracking-tight">
+          <motion.h2
+            initial={{ scale: 0.85, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            className="text-4xl md:text-7xl font-black text-white mb-6 leading-[1.05] tracking-tight"
+          >
             Unified Digital<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400">
               Infrastructure.
             </span>
-          </h2>
+          </motion.h2>
 
           <p className="text-white/55 text-xl max-w-3xl mx-auto leading-relaxed mb-4">
             A diversified technology group built to power Africa's digital transformation —
@@ -136,10 +187,10 @@ export function AwajimaGroup() {
           {/* Holding company node */}
           <div className="flex justify-center mb-0">
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
+              initial={{ y: 30, scale: 0.9, opacity: 0 }}
+              whileInView={{ y: 0, scale: 1, opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 20 }}
               className="relative"
             >
               <div className="relative px-10 py-6 rounded-2xl border-2 border-amber-500/40 bg-gradient-to-b from-amber-500/12 to-amber-500/4 text-center backdrop-blur-sm"
@@ -187,10 +238,12 @@ export function AwajimaGroup() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {ENTITIES.map((e, i) => (
               <motion.div key={e.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ y: 40, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true, amount: 0.05 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.15 }}
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.02, y: -4 }}
                 className="rounded-2xl border overflow-hidden"
                 style={{
                   borderColor: `${e.color}25`,
@@ -255,10 +308,10 @@ export function AwajimaGroup() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {PILLARS.map((p, i) => (
               <motion.div key={p.label}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={i % 2 === 0 ? { x: -60, opacity: 0 } : { x: 60, opacity: 0 }}
+                whileInView={i % 2 === 0 ? { x: 0, opacity: 1 } : { x: 0, opacity: 1 }}
                 viewport={{ once: true, amount: 0.05 }}
-                transition={{ duration: 0.4, delay: i * 0.08 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 25, delay: i * 0.08 }}
                 className="rounded-xl border border-white/5 bg-white/2 px-5 py-5 flex gap-4 items-start"
               >
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"

@@ -223,6 +223,51 @@ export function HealthEmergency() {
   return (
     <section className="py-28 relative bg-[#080508] border-t border-white/5 overflow-hidden">
 
+      {/* Floating rose orbs */}
+      {[
+        { w: 300, h: 300, top: '5%',  left: '3%',  color: '#f43f5e', delay: 0 },
+        { w: 220, h: 220, top: '60%', right: '5%', color: '#f43f5e', delay: 1.5 },
+        { w: 180, h: 180, top: '28%', left: '72%', color: '#fb923c', delay: 3 },
+        { w: 160, h: 160, top: '80%', left: '18%', color: '#f43f5e', delay: 2 },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: o.w, height: o.h, top: o.top, left: o.left, right: (o as { right?: string }).right,
+            background: `radial-gradient(circle, ${o.color}12 0%, transparent 70%)`,
+            filter: 'blur(40px)',
+          }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Flying cross/plus shapes floating upward */}
+      {[0, 1, 2, 3].map((i) => (
+        <motion.div
+          key={`cross-${i}`}
+          className="absolute pointer-events-none"
+          style={{ left: `${15 + i * 22}%`, bottom: `${10 + i * 8}%` }}
+          animate={{ y: [0, -80, 0], opacity: [0, 0.07, 0] }}
+          transition={{ duration: 5 + i * 1.5, repeat: Infinity, delay: i * 1.8 }}
+        >
+          <div style={{ position: 'relative', width: 16, height: 16 }}>
+            <div style={{ position: 'absolute', top: '50%', left: 0, width: '100%', height: 4, background: '#f43f5e', transform: 'translateY(-50%)' }} />
+            <div style={{ position: 'absolute', left: '50%', top: 0, width: 4, height: '100%', background: '#f43f5e', transform: 'translateX(-50%)' }} />
+          </div>
+        </motion.div>
+      ))}
+
+      {/* Flying particles (rose) */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div key={`p-${i}`}
+          className="absolute w-1 h-1 rounded-full pointer-events-none"
+          style={{ left: `${10 + i * 14}%`, bottom: '10%', background: 'rgba(244,63,94,0.3)' }}
+          animate={{ y: [0, -120, 0], opacity: [0, 0.6, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' }}
+        />
+      ))}
+
       {/* Background glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] pointer-events-none"
         style={{ background: 'radial-gradient(ellipse, rgba(244,63,94,0.06) 0%, transparent 70%)' }} />
@@ -240,12 +285,18 @@ export function HealthEmergency() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-rose-500/30 bg-rose-500/10 text-rose-400 text-xs font-mono tracking-widest mb-5 uppercase">
             <Activity className="w-3.5 h-3.5" /> Tele-Health & Emergency Response
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight">
+          <motion.h2
+            initial={{ scale: 0.85, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
+          >
             Every Hospital, Connected.<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-orange-400 to-amber-400">
               Every Patient, Protected.
             </span>
-          </h2>
+          </motion.h2>
           <p className="text-white/60 text-lg max-w-2xl mx-auto leading-relaxed">
             Awajimaa turns fragmented state health systems into a single intelligent network —
             where encrypted records travel with the patient, specialists consult in real time,
@@ -258,10 +309,10 @@ export function HealthEmergency() {
 
           {/* LEFT — Hospital network visualisation */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ x: -60, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.7 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
           >
             <div className="rounded-2xl border border-rose-500/15 bg-[#0d080b] overflow-hidden shadow-[0_0_60px_rgba(244,63,94,0.06)]">
               {/* Top bar */}
@@ -403,13 +454,7 @@ export function HealthEmergency() {
           </motion.div>
 
           {/* RIGHT — Capability cards */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.7 }}
-            className="flex flex-col gap-4"
-          >
+          <div className="flex flex-col gap-4">
             <p className="text-white/55 text-sm leading-relaxed mb-2">
               Nigeria has 35,000+ healthcare facilities. Most don't talk to each other.
               A patient referred from a primary health centre to a teaching hospital
@@ -418,10 +463,10 @@ export function HealthEmergency() {
             {CAPABILITIES.map((cap, i) => (
               <motion.div
                 key={cap.title}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ y: 40, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true, amount: 0.05 }}
-                transition={{ duration: 0.4, delay: i * 0.07 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.1 }}
                 className="group flex gap-4 bg-[#0d080b] border border-white/5 hover:border-rose-500/20 p-4 rounded-xl transition-all duration-200"
               >
                 <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
@@ -434,7 +479,7 @@ export function HealthEmergency() {
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
 
         {/* ── State Emergency Command Dashboard ───────────────────────────── */}
@@ -563,7 +608,6 @@ export function HealthEmergency() {
                     {/* Asset dots */}
                     {ASSET_DOTS.map((a, i) => {
                       const colors: Record<string,string> = { ambulance:'#f43f5e', drone:'#60a5fa', team:'#34d399' };
-                      const shapes: Record<string,string> = { ambulance:'🚑', drone:'▲', team:'⬟' };
                       return (
                         <g key={i}>
                           <motion.circle cx={a.x} cy={a.y} r={2.2}
@@ -957,7 +1001,11 @@ export function HealthEmergency() {
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className="px-6 py-6"
               >
-                <div className="text-3xl font-bold text-rose-400 mb-2">{stat}</div>
+                <motion.div
+                  className="text-3xl font-bold text-rose-400 mb-2"
+                  animate={{ textShadow: ['0 0 0px transparent', '0 0 20px #f43f5e', '0 0 0px transparent'] }}
+                  transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.5 }}
+                >{stat}</motion.div>
                 <div className="text-xs text-white/45 leading-relaxed">{label}</div>
               </motion.div>
             ))}

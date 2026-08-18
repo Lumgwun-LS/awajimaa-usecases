@@ -2,10 +2,52 @@ import { motion } from 'framer-motion';
 import { Store, TrendingUp, Handshake, Landmark } from 'lucide-react';
 import marketImg from '@assets/generated_images/market-kano.jpg';
 
+const cards = [
+  { Icon: Store,     color: 'text-secondary', title: 'Major Markets',    desc: "Direct access to the continent's largest trading hubs." },
+  { Icon: TrendingUp, color: 'text-primary',  title: 'Commodity Trading', desc: 'Real-time pricing and bulk agricultural trades.' },
+  { Icon: Handshake, color: 'text-white',     title: 'Business Deals',   desc: 'Milestone-based escrow and contract management.' },
+  { Icon: Landmark,  color: 'text-primary',   title: 'Finance Tools',    desc: 'Built-in expense tracking, P&L, and invoicing.' },
+];
+
 export function Marketplace() {
   return (
-    <section className="py-32 relative bg-background border-t border-white/5">
-      <div className="container mx-auto px-6">
+    <section className="py-32 relative bg-background border-t border-white/5 overflow-hidden">
+
+      {/* Floating orange orbs */}
+      {[
+        { w: 400, h: 400, top: '5%',  left: '-6%',  color: '#f97316', delay: 0 },
+        { w: 280, h: 280, top: '60%', left: '68%',  color: '#fb923c', delay: 1.4 },
+        { w: 200, h: 200, top: '15%', left: '74%',  color: '#f97316', delay: 2.7 },
+        { w: 160, h: 160, top: '75%', left: '18%',  color: '#fdba74', delay: 0.9 },
+        { w: 120, h: 120, top: '40%', left: '48%',  color: '#f97316', delay: 3.3 },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none z-0"
+          style={{
+            width: o.w, height: o.h, top: o.top, left: o.left,
+            background: `radial-gradient(circle, ${o.color}12 0%, transparent 70%)`,
+            filter: 'blur(45px)',
+          }}
+          animate={{ y: [0, -28, 0], x: [0, 14, 0], scale: [1, 1.09, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Flying orange particles */}
+      {[...Array(8)].map((_, i) => (
+        <motion.div key={i}
+          className="absolute w-1 h-1 rounded-full pointer-events-none z-0"
+          style={{
+            left: `${8 + i * 11}%`,
+            bottom: '8%',
+            background: 'rgba(249,115,22,0.28)',
+          }}
+          animate={{ y: [0, -130, 0], opacity: [0, 0.65, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' }}
+        />
+      ))}
+
+      <div className="container mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           
           <motion.div 
@@ -15,40 +57,43 @@ export function Marketplace() {
             transition={{ duration: 0.8 }}
           >
             <div className="text-primary font-mono text-sm tracking-wider mb-4 border border-primary/30 inline-block px-3 py-1 rounded-full bg-primary/10">AWA HUB MARKETPLACE</div>
-            <h2 className="text-4xl md:text-6xl font-bold mb-6">Kano to Nairobi <br />in 30 Seconds.</h2>
+            <motion.h2
+              initial={{ scale: 0.85, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+              className="text-4xl md:text-6xl font-bold mb-6"
+            >
+              Kano to Nairobi <br />in 30 Seconds.
+            </motion.h2>
             <p className="text-xl text-muted-foreground mb-8">
               A pan-African digital market that ignores borders. A farmer in Kano secures a bulk deal with a buyer in Nairobi, verified by milestone tracking and protected by integrated payments.
             </p>
 
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-card border border-white/5 p-5 rounded-xl">
-                <Store className="w-6 h-6 text-secondary mb-3" />
-                <h4 className="font-bold mb-1">Major Markets</h4>
-                <p className="text-sm text-muted-foreground">Direct access to the continent's largest trading hubs.</p>
-              </div>
-              <div className="bg-card border border-white/5 p-5 rounded-xl">
-                <TrendingUp className="w-6 h-6 text-primary mb-3" />
-                <h4 className="font-bold mb-1">Commodity Trading</h4>
-                <p className="text-sm text-muted-foreground">Real-time pricing and bulk agricultural trades.</p>
-              </div>
-              <div className="bg-card border border-white/5 p-5 rounded-xl">
-                <Handshake className="w-6 h-6 text-white mb-3" />
-                <h4 className="font-bold mb-1">Business Deals</h4>
-                <p className="text-sm text-muted-foreground">Milestone-based escrow and contract management.</p>
-              </div>
-              <div className="bg-card border border-white/5 p-5 rounded-xl">
-                <Landmark className="w-6 h-6 text-primary mb-3" />
-                <h4 className="font-bold mb-1">Finance Tools</h4>
-                <p className="text-sm text-muted-foreground">Built-in expense tracking, P&L, and invoicing.</p>
-              </div>
+              {cards.map(({ Icon, color, title, desc }, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ y: 40, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.1 }}
+                  className="bg-card border border-white/5 p-5 rounded-xl"
+                >
+                  <Icon className={`w-6 h-6 ${color} mb-3`} />
+                  <h4 className="font-bold mb-1">{title}</h4>
+                  <p className="text-sm text-muted-foreground">{desc}</p>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
 
+          {/* Image — zoom-in spring */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ scale: 0.88, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
             className="relative rounded-2xl overflow-hidden border border-white/10 aspect-[4/5] lg:h-[700px] w-full group"
           >
             <img src={marketImg} alt="African night market" className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700" />
@@ -69,11 +114,21 @@ export function Marketplace() {
               <div className="flex justify-between items-end">
                 <div>
                   <div className="text-xs text-muted-foreground mb-1">AMOUNT</div>
-                  <div className="text-2xl font-bold text-white">$24,500.00</div>
+                  <motion.div
+                    animate={{ textShadow: ['0 0 0px transparent', '0 0 20px #f97316', '0 0 0px transparent'] }}
+                    transition={{ duration: 2.5, repeat: Infinity }}
+                    className="text-2xl font-bold text-white"
+                  >
+                    $24,500.00
+                  </motion.div>
                 </div>
-                <div className="bg-primary/20 text-primary border border-primary/50 px-3 py-1 rounded text-xs font-bold">
+                <motion.div
+                  animate={{ textShadow: ['0 0 0px transparent', '0 0 12px #f97316', '0 0 0px transparent'] }}
+                  transition={{ duration: 2.5, repeat: Infinity, delay: 0.6 }}
+                  className="bg-primary/20 text-primary border border-primary/50 px-3 py-1 rounded text-xs font-bold"
+                >
                   ESCROW LOCKED
-                </div>
+                </motion.div>
               </div>
             </div>
           </motion.div>

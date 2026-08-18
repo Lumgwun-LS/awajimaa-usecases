@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, ChevronDown, Download } from 'lucide-react';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 import heroImg from '@assets/generated_images/hero-africa.jpg';
 import iconLogo from '@assets/awa_3_1787004494041.jpg';
 
@@ -16,6 +16,55 @@ export function Hero() {
           className="w-full h-full object-cover opacity-60"
         />
       </div>
+
+      {/* Floating golden orbs */}
+      {[
+        { w: 500, h: 500, top: '5%',  left: '10%',  color: '#f59e0b', delay: 0 },
+        { w: 350, h: 350, top: '55%', left: '65%',  color: '#fbbf24', delay: 1.2 },
+        { w: 280, h: 280, top: '20%', left: '70%',  color: '#f59e0b', delay: 2.4 },
+        { w: 220, h: 220, top: '70%', left: '5%',   color: '#fcd34d', delay: 0.8 },
+        { w: 180, h: 180, top: '40%', left: '45%',  color: '#f59e0b', delay: 3.2 },
+        { w: 120, h: 120, top: '85%', left: '80%',  color: '#fbbf24', delay: 1.8 },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none z-0"
+          style={{
+            width: o.w, height: o.h, top: o.top, left: o.left,
+            background: `radial-gradient(circle, ${o.color}14 0%, transparent 70%)`,
+            filter: 'blur(50px)',
+          }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Slow rotating large ring centered behind logo */}
+      <motion.div
+        className="absolute pointer-events-none z-0"
+        style={{
+          width: 500, height: 500,
+          top: '50%', left: '50%',
+          marginTop: -250, marginLeft: -250,
+          borderRadius: '50%',
+          border: '1px solid rgba(245,158,11,0.04)',
+        }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+      />
+
+      {/* Flying upward particles */}
+      {[...Array(10)].map((_, i) => (
+        <motion.div key={i}
+          className="absolute w-1 h-1 rounded-full pointer-events-none z-0"
+          style={{
+            left: `${8 + i * 9}%`,
+            bottom: '10%',
+            background: i % 2 === 0 ? 'rgba(245,158,11,0.25)' : 'rgba(255,255,255,0.15)',
+          }}
+          animate={{ y: [0, -140, 0], opacity: [0, 0.7, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' }}
+        />
+      ))}
 
       <div className="relative z-20 container mx-auto px-6 text-center">
         {/* Icon mark */}
@@ -43,9 +92,9 @@ export function Hero() {
         </motion.div>
 
         <motion.h1 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4 }}
+          initial={{ scale: 0.85, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.4 }}
           className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 leading-tight"
         >
           Mission Control <br />

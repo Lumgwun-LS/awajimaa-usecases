@@ -111,6 +111,46 @@ export function RealEstate() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] pointer-events-none"
         style={{ background: 'radial-gradient(ellipse, rgba(99,102,241,0.06) 0%, transparent 65%)' }} />
 
+      {/* Floating indigo orbs */}
+      {[
+        { w: 350, h: 350, top: '5%',  left: '2%',   color: '#6366f1', delay: 0   },
+        { w: 250, h: 250, top: '55%', right: '3%',  color: '#a78bfa', delay: 1.5 },
+        { w: 180, h: 180, top: '25%', left: '78%',  color: '#818cf8', delay: 3   },
+        { w: 200, h: 200, top: '70%', left: '15%',  color: '#6366f1', delay: 2   },
+        { w: 140, h: 140, top: '40%', left: '50%',  color: '#c4b5fd', delay: 4   },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none z-0"
+          style={{ width: o.w, height: o.h, top: o.top, left: o.left, right: (o as { right?: string }).right,
+            background: `radial-gradient(circle, ${o.color}12 0%, transparent 70%)`,
+            filter: 'blur(40px)' }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Flying indigo particles */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div key={i}
+          className="absolute w-1 h-1 rounded-full pointer-events-none z-0"
+          style={{ left: `${8 + i * 15}%`, bottom: '12%', background: 'rgba(99,102,241,0.25)' }}
+          animate={{ y: [0, -120, 0], opacity: [0, 0.6, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.7, ease: 'easeInOut' }}
+        />
+      ))}
+
+      {/* Floating house silhouettes */}
+      {['🏠', '🏢', '🏠'].map((icon, i) => (
+        <motion.div key={i}
+          className="absolute pointer-events-none z-0 select-none text-4xl"
+          style={{ left: `${15 + i * 30}%`, bottom: `${20 + i * 8}%`, opacity: 0.05 }}
+          animate={{ y: [0, -40, 0], opacity: [0.03, 0.06, 0.03] }}
+          transition={{ duration: 8 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: i * 2.5 }}
+        >
+          {icon}
+        </motion.div>
+      ))}
+
       <div className="container mx-auto px-6 relative z-10">
 
         {/* ── Header ─────────────────────────────────────────────────────── */}
@@ -124,13 +164,20 @@ export function RealEstate() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 text-xs font-mono tracking-widest mb-5 uppercase">
             <Home className="w-3.5 h-3.5" /> Real Estate & Property Management
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight">
+          <motion.h2
+            initial={{ scale: 0.85, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
+          >
             Every Property Managed.<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-400 to-purple-400">
               Every Move, Guided.
             </span>
-          </h2>
+          </motion.h2>
           <p className="text-white/55 text-lg max-w-2xl mx-auto leading-relaxed">
+
             Landlords manage their entire estate portfolio from one dashboard — rents, maintenance jobs, visitors, security, and meetings.
             Tenants log faults from their phones; landlords assign contractors and track every job to resolution.
             Prospective tenants take virtual tours, then let the app navigate them to the property for a physical inspection.
@@ -143,10 +190,10 @@ export function RealEstate() {
           {/* LEFT (3/5) — Landlord dashboard */}
           <motion.div
             className="lg:col-span-3"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ x: -60, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true, amount: 0.05 }}
-            transition={{ duration: 0.7 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
           >
             <div className="rounded-2xl border border-indigo-500/15 bg-[#080a14] overflow-hidden shadow-[0_0_60px_rgba(99,102,241,0.05)]">
 
@@ -378,23 +425,17 @@ export function RealEstate() {
           </motion.div>
 
           {/* RIGHT (2/5) — Feature cards */}
-          <motion.div
-            className="lg:col-span-2 flex flex-col gap-3"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.05 }}
-            transition={{ duration: 0.7 }}
-          >
+          <div className="lg:col-span-2 flex flex-col gap-3">
             <p className="text-white/45 text-sm leading-relaxed mb-1">
               Managing an estate in Nigeria means collecting rents by hand, calling tenants for every issue,
               and having no record of who enters or leaves. Awajimaa ends that completely.
             </p>
             {FEATURES.map((f, i) => (
               <motion.div key={f.title}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={i % 2 === 0 ? { y: 40, opacity: 0 } : { x: 60, opacity: 0 }}
+                whileInView={i % 2 === 0 ? { y: 0, opacity: 1 } : { x: 0, opacity: 1 }}
                 viewport={{ once: true, amount: 0.05 }}
-                transition={{ duration: 0.35, delay: i * 0.06 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.1 }}
                 className="flex gap-3 p-3.5 rounded-xl border border-white/5 bg-[#080a14] hover:border-indigo-500/15 transition-colors"
               >
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
@@ -407,7 +448,7 @@ export function RealEstate() {
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
 
         {/* ── Tenant experience: Virtual tour + Navigation ─────────────────── */}

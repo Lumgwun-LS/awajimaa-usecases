@@ -37,10 +37,65 @@ const mockApps = [
   { name: "MarketConnect", cat: "Business", rating: "4.8", dev: "TradeNet", color: "from-blue-500/20 to-transparent", price: "Free" }
 ];
 
+// App-icon-like squares: colored backgrounds, very low opacity
+const floatingIcons = [
+  { bg: '#6366f1', top: '12%', left: '3%' },
+  { bg: '#a78bfa', top: '70%', left: '6%' },
+  { bg: '#60a5fa', top: '40%', left: '91%' },
+  { bg: '#818cf8', top: '85%', left: '85%' },
+  { bg: '#c084fc', top: '20%', left: '75%' },
+  { bg: '#38bdf8', top: '55%', left: '96%' },
+];
+
 export function AppStore() {
   return (
     <section className="py-32 relative bg-background border-t border-white/5 overflow-hidden">
-      
+
+      {/* Floating orbs */}
+      {[
+        { w: 350, h: 350, top: '5%', left: '2%', color: '#6366f1', delay: 0 },
+        { w: 250, h: 250, top: '55%', right: '5%', color: '#a78bfa', delay: 1.5 },
+        { w: 180, h: 180, top: '25%', left: '78%', color: '#60a5fa', delay: 3 },
+        { w: 200, h: 200, top: '75%', left: '15%', color: '#818cf8', delay: 2 },
+        { w: 150, h: 150, top: '40%', left: '50%', color: '#c084fc', delay: 4 },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none z-0"
+          style={{
+            width: o.w, height: o.h, top: o.top, left: o.left, right: o.right,
+            background: `radial-gradient(circle, ${o.color}12 0%, transparent 70%)`,
+            filter: 'blur(40px)'
+          }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Floating app-icon-like squares */}
+      {floatingIcons.map((ic, i) => (
+        <motion.div key={i}
+          className="absolute pointer-events-none z-0 rounded-2xl"
+          style={{
+            width: 48, height: 48,
+            top: ic.top, left: ic.left,
+            background: ic.bg,
+            opacity: 0.06,
+          }}
+          animate={{ y: [0, -25, 0], rotate: [0, 10, 0, -10, 0] }}
+          transition={{ duration: 5 + i, repeat: Infinity, delay: i * 0.7, ease: 'easeInOut' }}
+        />
+      ))}
+
+      {/* Flying particles */}
+      {[...Array(8)].map((_, i) => (
+        <motion.div key={i}
+          className="absolute w-1 h-1 rounded-full pointer-events-none z-0"
+          style={{ left: `${10 + i * 12}%`, bottom: '10%', background: 'rgba(99,102,241,0.25)' }}
+          animate={{ y: [0, -120, 0], opacity: [0, 0.6, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' }}
+        />
+      ))}
+
       <div className="absolute inset-0 z-0 opacity-15">
         <img src={appStoreBg} alt="App Store Grid" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-background/90"></div>
@@ -51,15 +106,23 @@ export function AppStore() {
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
           <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ x: -60, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
           >
             <div className="text-secondary font-mono text-sm tracking-wider mb-4 border border-secondary/30 inline-block px-3 py-1 rounded-full bg-secondary/10">
               AWAJIMAA APP STORE
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold mb-6">Africa's First <br />Dedicated App Market.</h2>
+            <motion.h2
+              className="text-4xl md:text-6xl font-bold mb-6"
+              initial={{ scale: 0.85, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            >
+              Africa's First <br />Dedicated App Market.
+            </motion.h2>
             <p className="text-xl text-muted-foreground mb-8">
               Built for African developers, for African problems. Currently live with real developer accounts and app submissions.
             </p>
@@ -83,14 +146,21 @@ export function AppStore() {
           </motion.div>
 
           <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ x: 60, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25, delay: 0.15 }}
             className="grid grid-cols-2 gap-4"
           >
             {mockApps.map((app, i) => (
-              <div key={i} className={`bg-card/60 backdrop-blur border border-white/10 p-4 rounded-xl relative overflow-hidden group hover:border-secondary/50 transition-colors`}>
+              <motion.div
+                key={i}
+                initial={{ y: 40, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.1 }}
+                className={`bg-card/60 backdrop-blur border border-white/10 p-4 rounded-xl relative overflow-hidden group hover:border-secondary/50 transition-colors`}
+              >
                 <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${app.color} opacity-20 group-hover:opacity-40 transition-opacity rounded-full blur-2xl -mr-10 -mt-10`}></div>
                 
                 <div className="relative z-10">
@@ -110,7 +180,7 @@ export function AppStore() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
         </div>

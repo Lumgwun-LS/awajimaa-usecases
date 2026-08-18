@@ -101,6 +101,54 @@ export function Awards() {
       {/* Radial gold glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] pointer-events-none"
         style={{ background: 'radial-gradient(ellipse, rgba(245,158,11,0.07) 0%, transparent 65%)' }} />
+
+      {/* Floating gold orbs */}
+      {[
+        { w: 320, h: 320, top: '5%',  left: '2%',   color: '#f59e0b', delay: 0   },
+        { w: 220, h: 220, top: '60%', right: '4%',  color: '#fbbf24', delay: 1.5 },
+        { w: 160, h: 160, top: '30%', left: '80%',  color: '#fb923c', delay: 3   },
+        { w: 180, h: 180, top: '75%', left: '20%',  color: '#f59e0b', delay: 2   },
+        { w: 130, h: 130, top: '15%', left: '55%',  color: '#fde68a', delay: 4   },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none z-0"
+          style={{ width: o.w, height: o.h, top: o.top, left: o.left, right: (o as { right?: string }).right,
+            background: `radial-gradient(circle, ${o.color}12 0%, transparent 70%)`,
+            filter: 'blur(40px)' }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Confetti-like falling squares */}
+      {[...Array(8)].map((_, i) => {
+        const confettiColors = ['#f59e0b', '#fbbf24', '#fb923c', '#ffffff', '#f59e0b', '#fde68a', '#fb923c', '#fbbf24'];
+        return (
+          <motion.div key={i}
+            className="absolute pointer-events-none z-0 rounded-sm"
+            style={{
+              width: 6 + (i % 3) * 4,
+              height: 8 + (i % 2) * 4,
+              left: `${5 + i * 11}%`,
+              top: '-3%',
+              background: confettiColors[i],
+            }}
+            animate={{ y: ['-5%', '105%'], rotate: [0, 360], opacity: [0, 0.12, 0] }}
+            transition={{ duration: 6 + i * 1.5, repeat: Infinity, delay: i * 0.8, ease: 'linear' }}
+          />
+        );
+      })}
+
+      {/* Flying gold/amber particles */}
+      {[...Array(8)].map((_, i) => (
+        <motion.div key={i}
+          className="absolute w-1 h-1 rounded-full pointer-events-none z-0"
+          style={{ left: `${6 + i * 11}%`, bottom: '10%', background: 'rgba(245,158,11,0.3)' }}
+          animate={{ y: [0, -120, 0], opacity: [0, 0.6, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' }}
+        />
+      ))}
+
       {/* Subtle sparkle dots */}
       {[...Array(12)].map((_, i) => (
         <motion.div key={i}
@@ -124,12 +172,18 @@ export function Awards() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs font-mono tracking-widest mb-5 uppercase">
             <Trophy className="w-3.5 h-3.5" /> Awards & Recognition Platform
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight">
+          <motion.h2
+            initial={{ scale: 0.85, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
+          >
             Where Excellence<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400">
               Is Recognised.
             </span>
-          </h2>
+          </motion.h2>
           <p className="text-white/55 text-lg max-w-2xl mx-auto leading-relaxed">
             Award organisations manage every stage on one platform — open nominations, paid public voting,
             live leaderboards, ceremony ticketing, and digital certificates for winners.
@@ -151,10 +205,10 @@ export function Awards() {
               <div className="absolute top-5 left-[10%] right-[10%] h-px bg-gradient-to-r from-amber-500/10 via-amber-500/30 to-amber-500/10 hidden md:block" />
               {NOM_STEPS.map((s, i) => (
                 <motion.div key={s.title}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ y: 40, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.35, delay: i * 0.1 }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.1 }}
                   className="flex flex-col items-center text-center relative z-10"
                 >
                   <div className="w-10 h-10 rounded-full bg-[#100d00] border border-amber-500/30 flex items-center justify-center text-xl mb-3">
@@ -174,10 +228,10 @@ export function Awards() {
           {/* LEFT (3/5) — Award management dashboard */}
           <motion.div
             className="lg:col-span-3"
-            initial={{ opacity: 0, x: -28 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ x: -60, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true, amount: 0.05 }}
-            transition={{ duration: 0.7 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
           >
             <div className="rounded-2xl border border-amber-500/15 bg-[#0b0900] overflow-hidden shadow-[0_0_60px_rgba(245,158,11,0.04)]">
 
@@ -373,10 +427,10 @@ export function Awards() {
           {/* RIGHT (2/5) — Public voting card */}
           <motion.div
             className="lg:col-span-2 space-y-4"
-            initial={{ opacity: 0, x: 28 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ y: 40, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true, amount: 0.05 }}
-            transition={{ duration: 0.7 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
           >
             {/* Voting card */}
             <div className="rounded-2xl border border-amber-500/20 bg-[#0c0a00] overflow-hidden">
@@ -475,10 +529,10 @@ export function Awards() {
             {/* Feature cards */}
             {FEATURES.map((f, i) => (
               <motion.div key={f.title}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ y: 40, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true, amount: 0.05 }}
-                transition={{ duration: 0.35, delay: i * 0.05 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.08 }}
                 className="flex gap-3 p-3.5 rounded-xl border border-white/5 bg-[#0b0900] hover:border-amber-500/12 transition-colors"
               >
                 <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"

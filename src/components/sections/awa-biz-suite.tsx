@@ -62,6 +62,18 @@ const features = [
   }
 ];
 
+// Mini bar chart silhouette rects for background decoration
+const chartBars = [
+  { h: 40, left: '8%', top: '60%' },
+  { h: 60, left: '9.8%', top: '48%' },
+  { h: 35, left: '11.6%', top: '63%' },
+  { h: 50, left: '13.4%', top: '54%' },
+  { h: 72, left: '88%', top: '38%' },
+  { h: 45, left: '89.8%', top: '57%' },
+  { h: 55, left: '91.6%', top: '48%' },
+  { h: 30, left: '93.4%', top: '66%' },
+];
+
 export function AwaBizSuite() {
   return (
     <section className="py-32 relative bg-background border-t border-white/5 overflow-hidden">
@@ -70,6 +82,53 @@ export function AwaBizSuite() {
         <img src={bgImg} alt="Awa Biz Suite Dashboard" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background"></div>
       </div>
+
+      {/* Floating violet orbs */}
+      {[
+        { w: 320, h: 320, top: '5%', left: '3%', color: '#8b5cf6', delay: 0 },
+        { w: 220, h: 220, top: '60%', right: '4%', color: '#7c3aed', delay: 1.5 },
+        { w: 170, h: 170, top: '30%', left: '82%', color: '#a78bfa', delay: 3 },
+        { w: 200, h: 200, top: '80%', left: '20%', color: '#c084fc', delay: 2 },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none z-0"
+          style={{
+            width: o.w, height: o.h, top: o.top, left: o.left, right: o.right,
+            background: `radial-gradient(circle, ${o.color}12 0%, transparent 70%)`,
+            filter: 'blur(40px)'
+          }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Mini bar chart silhouettes */}
+      {chartBars.map((b, i) => (
+        <motion.div key={i}
+          className="absolute pointer-events-none z-0"
+          style={{
+            width: 14,
+            height: b.h,
+            left: b.left,
+            top: b.top,
+            background: '#8b5cf6',
+            opacity: 0.05,
+            borderRadius: 3,
+          }}
+          animate={{ scaleY: [1, 1.15, 1], opacity: [0.04, 0.07, 0.04] }}
+          transition={{ duration: 3 + i * 0.4, repeat: Infinity, delay: i * 0.3, ease: 'easeInOut' }}
+        />
+      ))}
+
+      {/* Flying particles (violet) */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div key={i}
+          className="absolute w-1 h-1 rounded-full pointer-events-none z-0"
+          style={{ left: `${12 + i * 14}%`, bottom: '8%', background: 'rgba(139,92,246,0.35)' }}
+          animate={{ y: [0, -120, 0], opacity: [0, 0.6, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' }}
+        />
+      ))}
 
       <div className="container mx-auto px-6 relative z-10">
         <motion.div 
@@ -82,7 +141,15 @@ export function AwaBizSuite() {
           <div className="text-primary font-mono text-sm tracking-wider mb-4 border border-primary/30 inline-block px-3 py-1 rounded-full bg-primary/10">
             AWA BIZ SUITE
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold mb-6">The Backbone of <br className="hidden md:block"/>African Commerce.</h2>
+          <motion.h2
+            className="text-4xl md:text-6xl font-bold mb-6"
+            initial={{ scale: 0.85, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+          >
+            The Backbone of <br className="hidden md:block"/>African Commerce.
+          </motion.h2>
           <p className="text-xl text-muted-foreground mb-8">
             A complete business operating system for African SMEs and enterprises. Powering every business on the Awajimaa platform.
           </p>
@@ -95,10 +162,10 @@ export function AwaBizSuite() {
           {features.map((f, i) => (
             <motion.div 
               key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ y: 40, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.1 }}
               className="bg-card/50 backdrop-blur border border-white/10 p-8 rounded-2xl group hover:border-primary/50 transition-colors"
             >
               <div className="w-12 h-12 rounded bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
@@ -112,10 +179,10 @@ export function AwaBizSuite() {
 
         {/* Revenue Pitch */}
         <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ x: 60, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 25 }}
           className="bg-card/80 backdrop-blur border border-white/10 rounded-2xl p-8 md:p-12 relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 p-8 opacity-10">

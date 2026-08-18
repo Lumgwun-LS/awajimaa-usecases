@@ -237,6 +237,51 @@ export function RevenueModel() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] pointer-events-none"
         style={{ background: 'radial-gradient(ellipse, rgba(251,191,36,0.04) 0%, transparent 65%)' }} />
 
+      {/* Floating amber orbs */}
+      {[
+        { w: 300, h: 300, top: '8%',  left: '3%',   color: '#f59e0b', delay: 0   },
+        { w: 220, h: 220, top: '55%', right: '5%',  color: '#fbbf24', delay: 1.5 },
+        { w: 160, h: 160, top: '35%', left: '75%',  color: '#fb923c', delay: 3   },
+        { w: 200, h: 200, top: '72%', left: '25%',  color: '#f59e0b', delay: 2   },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none z-0"
+          style={{ width: o.w, height: o.h, top: o.top, left: o.left, right: (o as { right?: string }).right,
+            background: `radial-gradient(circle, ${o.color}10 0%, transparent 70%)`,
+            filter: 'blur(40px)' }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Flying gold particles */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div key={i}
+          className="absolute w-1 h-1 rounded-full pointer-events-none z-0"
+          style={{ left: `${10 + i * 14}%`, bottom: '10%', background: 'rgba(251,191,36,0.3)' }}
+          animate={{ y: [0, -120, 0], opacity: [0, 0.6, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' }}
+        />
+      ))}
+
+      {/* Floating currency symbols */}
+      {['₦', '$', '€', '₦', '$', '€'].map((sym, i) => (
+        <motion.div key={i}
+          className="absolute pointer-events-none z-0 font-bold select-none"
+          style={{
+            left: `${8 + i * 16}%`,
+            bottom: `${15 + (i % 3) * 10}%`,
+            fontSize: 32 + (i % 3) * 12,
+            color: '#fbbf24',
+            opacity: 0,
+          }}
+          animate={{ y: [0, -100, 0], opacity: [0, 0.04, 0] }}
+          transition={{ duration: 7 + i * 2, repeat: Infinity, delay: i * 1.5, ease: 'easeInOut' }}
+        >
+          {sym}
+        </motion.div>
+      ))}
+
       <div className="container mx-auto px-6 relative z-10">
 
         {/* ── Header ─────────────────────────────────────────────────────── */}
@@ -250,12 +295,18 @@ export function RevenueModel() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/8 text-amber-400 text-xs font-mono tracking-widest mb-5 uppercase">
             <TrendingUp className="w-3.5 h-3.5" /> Revenue Model
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight">
+          <motion.h2
+            initial={{ scale: 0.85, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
+          >
             Six Revenue Streams.<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400">
               All From the Same Platform.
             </span>
-          </h2>
+          </motion.h2>
           <p className="text-white/55 text-lg max-w-2xl mx-auto leading-relaxed">
             Every vertical Awajimaa operates in generates a distinct, recurring revenue stream.
             States fund citizen access. Industries pay to connect. Transactions generate commissions.
@@ -298,10 +349,10 @@ export function RevenueModel() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-20">
           {STREAMS.map((s, i) => (
             <motion.div key={s.id}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ y: 40, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true, amount: 0.05 }}
-              transition={{ duration: 0.45, delay: i * 0.07 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.08 }}
               onClick={() => setActive(active === s.id ? null : s.id)}
               className="rounded-2xl border cursor-pointer transition-all duration-200 overflow-hidden"
               style={{
@@ -565,10 +616,16 @@ export function RevenueModel() {
                 <Flag className="w-3.5 h-3.5" /> 10-Year Projection
               </div>
 
-              <div className="text-6xl md:text-9xl font-black text-white mb-2 leading-none tracking-tight">
+              <motion.div
+                initial={{ scale: 0.85, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                className="text-6xl md:text-9xl font-black text-white mb-2 leading-none tracking-tight"
+              >
                 <BillionCounter />
                 <span className="text-amber-400">M</span>
-              </div>
+              </motion.div>
               <div className="text-lg md:text-2xl font-light text-white/50 mb-3">
                 cumulative platform revenue · Nigeria first · 10 years
               </div>

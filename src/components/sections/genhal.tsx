@@ -33,23 +33,74 @@ export function GenHal() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,179,0,0.05),transparent_70%)]"></div>
       </div>
 
+      {/* Floating amber orbs */}
+      {[
+        { w: 280, h: 280, top: '8%',  left: '3%',   color: '#f59e0b', delay: 0   },
+        { w: 200, h: 200, top: '55%', right: '5%',  color: '#fbbf24', delay: 1.5 },
+        { w: 160, h: 160, top: '30%', left: '75%',  color: '#fb923c', delay: 3   },
+        { w: 180, h: 180, top: '68%', left: '20%',  color: '#f59e0b', delay: 2   },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none z-0"
+          style={{ width: o.w, height: o.h, top: o.top, left: o.left, right: (o as { right?: string }).right,
+            background: `radial-gradient(circle, ${o.color}10 0%, transparent 70%)`,
+            filter: 'blur(40px)' }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* African language characters drifting upward */}
+      {['Ọ', 'Ẹ', 'Ṣ', 'Ń', 'Ẁ', 'Ì'].map((char, i) => (
+        <motion.div key={i}
+          className="absolute pointer-events-none z-0 select-none font-serif font-bold"
+          style={{
+            left: `${8 + i * 16}%`,
+            bottom: `${15 + (i % 3) * 12}%`,
+            fontSize: 36 + (i % 3) * 16,
+            color: '#FFB300',
+            opacity: 0,
+          }}
+          animate={{ y: [0, -80, 0], opacity: [0, 0.06, 0] }}
+          transition={{ duration: 5 + i * 1.2, repeat: Infinity, delay: i * 0.9, ease: 'easeInOut' }}
+        >
+          {char}
+        </motion.div>
+      ))}
+
+      {/* Flying amber particles */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div key={i}
+          className="absolute w-1 h-1 rounded-full pointer-events-none z-0"
+          style={{ left: `${10 + i * 14}%`, bottom: '12%', background: 'rgba(255,179,0,0.3)' }}
+          animate={{ y: [0, -120, 0], opacity: [0, 0.6, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.7, ease: 'easeInOut' }}
+        />
+      ))}
+
       <div className="container mx-auto px-6 relative z-10">
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ x: -60, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
           >
             <div className="text-[#FFB300] font-mono text-sm tracking-wider mb-4 border border-[#FFB300]/30 inline-block px-3 py-1 rounded-full bg-[#FFB300]/10">
               GENEALOGY • HERITAGE • LANGUAGE
             </div>
             
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 font-serif">
+            <motion.h2
+              initial={{ scale: 0.85, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.1 }}
+              className="text-4xl md:text-6xl font-bold mb-6 font-serif"
+            >
               Preserving <br />African Roots.
-            </h2>
+            </motion.h2>
             
             <p className="text-xl text-white/70 mb-4 font-light leading-relaxed">
               Every African has a family. Building the global African relationship graph creates a network effect no competitor can replicate. GenHaL is the identity layer of the Awajimaa ecosystem.
@@ -81,15 +132,15 @@ export function GenHal() {
 
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex flex-col gap-4"
-          >
+          <div className="flex flex-col gap-4">
             {features.map((f, i) => (
-              <div key={i} className="flex gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors group">
+              <motion.div key={i}
+                initial={{ y: 40, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true, amount: 0.05 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.08 }}
+                className="flex gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors group"
+              >
                 <div className="w-12 h-12 rounded-full bg-[#FFB300]/10 flex items-center justify-center shrink-0 border border-[#FFB300]/20 group-hover:bg-[#FFB300]/20 transition-colors">
                   <f.icon className="w-5 h-5 text-[#FFB300]" />
                 </div>
@@ -97,9 +148,9 @@ export function GenHal() {
                   <h4 className="font-bold text-white mb-1 group-hover:text-[#FFB300] transition-colors">{f.title}</h4>
                   <p className="text-sm text-white/60 leading-relaxed">{f.desc}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </motion.div>
+          </div>
 
         </div>
         

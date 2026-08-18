@@ -113,6 +113,53 @@ export function OilSpillage() {
   return (
     <section className="py-28 relative bg-[#040b07] border-t border-white/5 overflow-hidden">
 
+      {/* Floating emerald orbs */}
+      {[
+        { w: 300, h: 300, top: '5%',  left: '3%',  color: '#10b981', delay: 0 },
+        { w: 220, h: 220, top: '60%', right: '5%', color: '#10b981', delay: 1.5 },
+        { w: 180, h: 180, top: '30%', left: '72%', color: '#34d399', delay: 3 },
+        { w: 160, h: 160, top: '75%', left: '20%', color: '#10b981', delay: 2 },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: o.w, height: o.h, top: o.top, left: o.left, right: (o as { right?: string }).right,
+            background: `radial-gradient(circle, ${o.color}12 0%, transparent 70%)`,
+            filter: 'blur(40px)',
+          }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Animated oil-drop shapes floating downward */}
+      {[0, 1, 2].map((i) => (
+        <motion.div
+          key={`drop-${i}`}
+          className="absolute pointer-events-none"
+          style={{
+            width: 12,
+            height: 16,
+            left: `${20 + i * 30}%`,
+            top: '-5%',
+            background: '#10b981',
+            borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+          }}
+          animate={{ y: ['-10%', '110vh'], opacity: [0, 0.08, 0] }}
+          transition={{ duration: 8 + i * 2, repeat: Infinity, delay: i * 2.5, ease: 'easeIn' }}
+        />
+      ))}
+
+      {/* Flying particles (emerald) */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div key={`p-${i}`}
+          className="absolute w-1 h-1 rounded-full pointer-events-none"
+          style={{ left: `${10 + i * 14}%`, bottom: '10%', background: 'rgba(16,185,129,0.3)' }}
+          animate={{ y: [0, -120, 0], opacity: [0, 0.6, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' }}
+        />
+      ))}
+
       {/* Background radial */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] pointer-events-none"
         style={{ background: 'radial-gradient(ellipse, rgba(52,211,153,0.04) 0%, transparent 65%)' }} />
@@ -130,12 +177,18 @@ export function OilSpillage() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono tracking-widest mb-5 uppercase">
             <Droplets className="w-3.5 h-3.5" /> Oil Spill Accountability Network
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight">
+          <motion.h2
+            initial={{ scale: 0.85, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
+          >
             A Community Reports. <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400">
               Every Authority Knows. Instantly.
             </span>
-          </h2>
+          </motion.h2>
           <p className="text-white/55 text-lg max-w-2xl mx-auto leading-relaxed">
             Niger Delta communities have reported oil spills for decades — to silence.
             Awajimaa ends that. One report reaches NOSDRA, the oil company, the state government,
@@ -150,10 +203,10 @@ export function OilSpillage() {
           {/* LEFT (3/5) — Broadcast visualisation */}
           <motion.div
             className="lg:col-span-3"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ x: -60, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true, amount: 0.05 }}
-            transition={{ duration: 0.7 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
             onViewportEnter={() => setShowFlow(true)}
           >
             <div className="rounded-2xl border border-emerald-500/15 bg-[#050e08] overflow-hidden shadow-[0_0_60px_rgba(52,211,153,0.04)]">
@@ -246,9 +299,11 @@ export function OilSpillage() {
                     <motion.button
                       key={r.id}
                       onClick={() => setActiveReceiver(activeReceiver === i ? null : i)}
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ y: 40, opacity: 0 }}
+                      whileInView={{ y: 0, opacity: 1 }}
+                      viewport={{ once: true, amount: 0.05 }}
                       animate={{ opacity: flowStep >= i ? 1 : 0.2, y: 0 }}
-                      transition={{ duration: 0.35 }}
+                      transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.1 }}
                       className="flex flex-col items-center gap-2 p-3 rounded-xl border text-center transition-all duration-150 cursor-pointer"
                       style={{
                         borderColor: activeReceiver === i ? `${r.color}50` : flowStep >= i ? `${r.color}25` : 'rgba(255,255,255,0.05)',
@@ -506,10 +561,10 @@ export function OilSpillage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {HOW_IT_WORKS.map((step, i) => (
               <motion.div key={step.n}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ y: 40, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true, amount: 0.05 }}
-                transition={{ duration: 0.45, delay: i * 0.08 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.1 }}
                 className="relative p-5 rounded-2xl border border-white/6 bg-[#060e08] hover:border-emerald-500/15 transition-colors"
               >
                 <div className="text-[40px] font-black text-white/4 absolute top-3 right-4 leading-none font-mono select-none">{step.n}</div>

@@ -96,6 +96,46 @@ export function Logistics() {
   return (
     <section className="py-28 relative bg-[#060a10] border-t border-white/5 overflow-hidden">
 
+      {/* Floating amber/green orbs */}
+      {[
+        { w: 320, h: 320, top: '5%',  left: '2%',  color: '#f59e0b', delay: 0 },
+        { w: 240, h: 240, top: '55%', right: '5%', color: '#22c55e', delay: 1.5 },
+        { w: 180, h: 180, top: '25%', left: '75%', color: '#f59e0b', delay: 3 },
+        { w: 200, h: 200, top: '70%', left: '15%', color: '#22c55e', delay: 2 },
+        { w: 150, h: 150, top: '40%', left: '50%', color: '#f59e0b', delay: 4 },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: o.w, height: o.h, top: o.top, left: o.left, right: (o as { right?: string }).right,
+            background: `radial-gradient(circle, ${o.color}12 0%, transparent 70%)`,
+            filter: 'blur(40px)',
+          }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Drifting truck/arrow shapes (subtle triangles) */}
+      {[0, 1, 2, 3].map((i) => (
+        <motion.div
+          key={`truck-${i}`}
+          className="absolute pointer-events-none"
+          style={{
+            top: `${20 + i * 18}%`,
+            left: 0,
+            opacity: 0.06,
+            width: 0,
+            height: 0,
+            borderTop: '8px solid transparent',
+            borderBottom: '8px solid transparent',
+            borderLeft: '16px solid #f59e0b',
+          }}
+          animate={{ x: ['-5%', '105vw'] }}
+          transition={{ duration: 12 + i * 3, repeat: Infinity, delay: i * 3, ease: 'linear' }}
+        />
+      ))}
+
       {/* Background: subtle hex grid */}
       <div className="absolute inset-0 opacity-[0.04]"
         style={{ backgroundImage: 'linear-gradient(rgba(0,200,120,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,120,.6) 1px,transparent 1px)', backgroundSize: '48px 48px' }} />
@@ -117,12 +157,18 @@ export function Logistics() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono tracking-widest mb-5 uppercase">
             <Truck className="w-3.5 h-3.5" /> Multi-Vendor Logistics
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight">
+          <motion.h2
+            initial={{ scale: 0.85, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
+          >
             Every Truck in Africa,<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">
               On One Platform.
             </span>
-          </h2>
+          </motion.h2>
           <p className="text-white/60 text-lg max-w-2xl mx-auto leading-relaxed">
             Africa's logistics giants no longer need their own apps or tech teams.
             Awajimaa powers their entire operation — from customer booking to last-mile delivery —
@@ -155,10 +201,10 @@ export function Logistics() {
 
           {/* LEFT — Fleet Command Center simulation */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ x: -60, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.7 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
           >
             <div className="rounded-2xl border border-emerald-500/20 bg-[#080d13] overflow-hidden shadow-[0_0_60px_rgba(0,180,80,0.08)]">
               {/* Command center top bar */}
@@ -325,10 +371,10 @@ export function Logistics() {
               {PLATFORM_FEATURES.map((f, i) => (
                 <motion.div
                   key={f.label}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ y: 40, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
                   viewport={{ once: true, amount: 0.1 }}
-                  transition={{ duration: 0.4, delay: i * 0.07 }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.1 }}
                   className="group bg-[#0b1117] border border-white/5 hover:border-emerald-500/30 p-4 rounded-xl transition-all duration-200"
                 >
                   <div className="flex items-start gap-3">
@@ -360,12 +406,20 @@ export function Logistics() {
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-emerald-500/8 border border-emerald-500/20 p-4 rounded-xl">
                 <div className="text-[10px] font-mono text-emerald-400/70 uppercase tracking-widest mb-1">SaaS Revenue</div>
-                <div className="text-2xl font-bold text-white">$150K</div>
+                <motion.div
+                  className="text-2xl font-bold text-white"
+                  animate={{ textShadow: ['0 0 0px transparent', '0 0 20px #22c55e', '0 0 0px transparent'] }}
+                  transition={{ duration: 2.5, repeat: Infinity }}
+                >$150K</motion.div>
                 <div className="text-xs text-white/40">per major operator / yr</div>
               </div>
               <div className="bg-white/3 border border-white/8 p-4 rounded-xl">
                 <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-1">TAM — Africa Logistics</div>
-                <div className="text-2xl font-bold text-white">$180B</div>
+                <motion.div
+                  className="text-2xl font-bold text-white"
+                  animate={{ textShadow: ['0 0 0px transparent', '0 0 20px #f59e0b', '0 0 0px transparent'] }}
+                  transition={{ duration: 2.5, repeat: Infinity, delay: 1.2 }}
+                >$180B</motion.div>
                 <div className="text-xs text-white/40">market by 2030</div>
               </div>
             </div>

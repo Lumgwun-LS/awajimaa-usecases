@@ -159,7 +159,7 @@ export function VideoShowcase() {
   const [videoPaused, setVideoPaused] = useState(false);
   // sliderHovered: mouse is over the slider — pauses auto-advance
   const [sliderHovered, setSliderHovered] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval>>();
+  const timerRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   const next = useCallback(() => {
     setActive(i => (i + 1) % videos.length);
@@ -202,14 +202,65 @@ export function VideoShowcase() {
       <div className="absolute inset-0 opacity-[0.03]"
         style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
 
+      {/* Floating orbs — color shifts to match active video accent */}
+      {[
+        { w: 280, h: 280, top: '5%', left: '2%', delay: 0 },
+        { w: 200, h: 200, top: '60%', right: '3%', delay: 1.5 },
+        { w: 160, h: 160, top: '30%', left: '82%', delay: 3 },
+        { w: 180, h: 180, top: '78%', left: '15%', delay: 2 },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none z-0"
+          style={{
+            width: o.w, height: o.h, top: o.top, left: o.left, right: o.right,
+            background: `radial-gradient(circle, ${v.accent}10 0%, transparent 70%)`,
+            filter: 'blur(40px)'
+          }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Floating play button shapes */}
+      {[
+        { top: '12%', left: '7%', delay: 0 },
+        { top: '65%', left: '90%', delay: 1.5 },
+        { top: '40%', left: '3%', delay: 3 },
+      ].map((p, i) => (
+        <motion.div key={i}
+          className="absolute pointer-events-none z-0 flex items-center justify-center rounded-full border-2 border-white select-none"
+          style={{
+            width: 48,
+            height: 48,
+            top: p.top,
+            left: p.left,
+            borderColor: 'rgba(255,255,255,0.15)',
+          }}
+          animate={{ y: [0, -20, 0], scale: [1, 1.1, 1], opacity: [0.04, 0.08, 0.04] }}
+          transition={{ duration: 4 + i * 2, repeat: Infinity, delay: p.delay, ease: 'easeInOut' }}
+        >
+          <span style={{ fontSize: 16, color: 'rgba(255,255,255,0.5)', marginLeft: 3 }}>▶</span>
+        </motion.div>
+      ))}
+
+      {/* Flying particles */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div key={i}
+          className="absolute w-1 h-1 rounded-full pointer-events-none z-0"
+          style={{ left: `${10 + i * 15}%`, bottom: '8%', background: 'rgba(255,255,255,0.15)' }}
+          animate={{ y: [0, -120, 0], opacity: [0, 0.6, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' }}
+        />
+      ))}
+
       <div className="container mx-auto px-6 relative z-10">
 
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ scale: 0.85, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true, amount: 0.01 }}
-          transition={{ duration: 0.7 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
           className="text-center mb-14"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-white/5 text-white/60 text-xs font-mono tracking-widest mb-4 uppercase">
@@ -382,9 +433,13 @@ export function VideoShowcase() {
         {/* Thumbnail strip */}
         <div className="mt-8 flex gap-3 overflow-x-auto pb-2 scrollbar-hide justify-center flex-wrap">
           {videos.map((vid, i) => (
-            <button
+            <motion.button
               key={vid.id}
               onClick={() => goTo(i)}
+              initial={{ y: 40, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.05 }}
               className={`shrink-0 relative rounded-xl overflow-hidden border transition-all duration-300 ${
                 i === active
                   ? 'border-white/40 scale-105 shadow-lg'
@@ -400,7 +455,7 @@ export function VideoShowcase() {
               {i === active && (
                 <motion.div layoutId="thumb-indicator" className="absolute inset-0 ring-2 ring-white/40 rounded-xl" />
               )}
-            </button>
+            </motion.button>
           ))}
         </div>
 

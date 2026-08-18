@@ -79,6 +79,53 @@ export function InsuranceFinance() {
   return (
     <section className="py-28 relative bg-[#09080f] border-t border-white/5 overflow-hidden">
 
+      {/* Floating purple orbs */}
+      {[
+        { w: 300, h: 300, top: '5%',  left: '3%',  color: '#8b5cf6', delay: 0 },
+        { w: 240, h: 240, top: '55%', right: '5%', color: '#6366f1', delay: 1.5 },
+        { w: 180, h: 180, top: '28%', left: '72%', color: '#8b5cf6', delay: 3 },
+        { w: 160, h: 160, top: '75%', left: '20%', color: '#6366f1', delay: 2 },
+      ].map((o, i) => (
+        <motion.div key={i}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: o.w, height: o.h, top: o.top, left: o.left, right: (o as { right?: string }).right,
+            background: `radial-gradient(circle, ${o.color}12 0%, transparent 70%)`,
+            filter: 'blur(40px)',
+          }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: o.delay }}
+        />
+      ))}
+
+      {/* Flying particles (purple) */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div key={`p-${i}`}
+          className="absolute w-1 h-1 rounded-full pointer-events-none"
+          style={{ left: `${10 + i * 14}%`, bottom: '10%', background: 'rgba(139,92,246,0.3)' }}
+          animate={{ y: [0, -120, 0], opacity: [0, 0.6, 0] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' }}
+        />
+      ))}
+
+      {/* Rotating shield background element */}
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{
+          top: '50%',
+          left: '50%',
+          width: 500,
+          height: 500,
+          marginTop: -250,
+          marginLeft: -250,
+          opacity: 0.03,
+          border: '2px solid #8b5cf6',
+          borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+        }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+      />
+
       {/* Background glow */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.05) 0%, transparent 70%)' }} />
@@ -98,12 +145,18 @@ export function InsuranceFinance() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs font-mono tracking-widest mb-5 uppercase">
             <Shield className="w-3.5 h-3.5" /> African Insurance Sector
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight">
+          <motion.h2
+            initial={{ scale: 0.85, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
+          >
             No More Building Apps.<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-red-400">
               Just Issue Policies.
             </span>
-          </h2>
+          </motion.h2>
           <p className="text-white/60 text-lg max-w-2xl mx-auto leading-relaxed">
             Africa's insurers spend millions building portals no one uses. Awajimaa gives them
             50 million verified users, an auto-claim pipeline tied to our emergency network,
@@ -136,10 +189,10 @@ export function InsuranceFinance() {
           {COVERAGE_PILLARS.map((pillar, i) => (
             <motion.div
               key={pillar.tag}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ y: 40, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true, amount: 0.1 }}
-              transition={{ duration: 0.5, delay: i * 0.12 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 20, delay: [0, 0.12, 0.24][i] }}
               className={`relative group rounded-2xl border ${pillar.border} bg-[#0d0b16] p-6 overflow-hidden transition-all duration-300 hover:scale-[1.02]`}
               style={{ boxShadow: `0 0 40px ${pillar.glow}` }}
             >
@@ -216,10 +269,10 @@ export function InsuranceFinance() {
             {CLAIMS_FLOW.map((step, i) => (
               <motion.div
                 key={step.label}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ x: i % 2 === 0 ? -60 : 60, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
                 viewport={{ once: true, amount: 0.1 }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 25, delay: i * 0.1 }}
                 className="relative"
               >
                 {i < CLAIMS_FLOW.length - 1 && (
@@ -263,7 +316,11 @@ export function InsuranceFinance() {
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className="px-6 py-6"
               >
-                <div className="text-3xl font-bold text-amber-400 mb-2">{item.stat}</div>
+                <motion.div
+                  className="text-3xl font-bold text-amber-400 mb-2"
+                  animate={{ textShadow: ['0 0 0px transparent', '0 0 20px #f59e0b', '0 0 0px transparent'] }}
+                  transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.5 }}
+                >{item.stat}</motion.div>
                 <div className="text-xs text-white/50 leading-relaxed">{item.label}</div>
               </motion.div>
             ))}
