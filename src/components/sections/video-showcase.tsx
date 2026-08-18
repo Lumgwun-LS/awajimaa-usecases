@@ -377,17 +377,29 @@ export function VideoShowcase() {
                 </button>
               </div>
 
-              {/* iframe */}
-              <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black"
-                style={{ aspectRatio: '16/9' }}>
-                <iframe
-                  src={videos[modal].path}
-                  title={videos[modal].title}
-                  className="w-full h-full"
-                  allow="autoplay"
-                  loading="lazy"
-                />
-              </div>
+              {/* iframe — keyed so React fully unmounts the old one (kills audio)
+                  before mounting the new video. AnimatePresence mode="wait"
+                  ensures exit completes before enter begins → zero audio overlap. */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={videos[modal].path}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.18 }}
+                  className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black"
+                  style={{ aspectRatio: '16/9' }}
+                >
+                  <iframe
+                    key={videos[modal].path}
+                    src={videos[modal].path}
+                    title={videos[modal].title}
+                    className="w-full h-full"
+                    allow="autoplay"
+                    loading="lazy"
+                  />
+                </motion.div>
+              </AnimatePresence>
 
               {/* Modal nav */}
               <div className="flex items-center justify-between mt-4 px-1">
