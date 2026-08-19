@@ -216,25 +216,53 @@ export function Footer() {
               </li>
               <li>
                 <div className="text-xs text-white/40 mb-1 font-mono">General Inquiries</div>
-                <a href="mailto:info@awajimaagroup.com" className="text-white/70 hover:text-white text-sm transition-colors">
-                  info@awajimaagroup.com
+                <a href="mailto:admin@awajimaa.com" className="text-white/70 hover:text-white text-sm transition-colors block">
+                  admin@awajimaa.com
+                </a>
+                <a href="mailto:awajimaaapps@gmail.com" className="text-white/70 hover:text-white text-sm transition-colors block mt-0.5">
+                  awajimaaapps@gmail.com
                 </a>
               </li>
               <li>
                 <div className="text-xs text-white/40 mb-1 font-mono">For Investors</div>
-                <a href="mailto:investors@awajimaagroup.com" className="text-white/70 hover:text-white text-sm transition-colors">
-                  investors@awajimaagroup.com
+                <a href="mailto:investors@awajimaa.com" className="text-white/70 hover:text-white text-sm transition-colors">
+                  investors@awajimaa.com
                 </a>
               </li>
               <li>
                 <div className="text-xs text-white/40 mb-1 font-mono">For Governments</div>
-                <a href="mailto:government@awajimaagroup.com" className="text-white/70 hover:text-white text-sm transition-colors">
-                  government@awajimaagroup.com
+                <a href="mailto:admin@awajimaa.com" className="text-white/70 hover:text-white text-sm transition-colors">
+                  admin@awajimaa.com
                 </a>
               </li>
               <li>
-                <div className="text-xs text-white/40 mb-1 font-mono">Location</div>
-                <span className="text-white/70 text-sm">Lagos, Nigeria</span>
+                <div className="text-xs text-white/40 mb-1 font-mono">Nigeria Office</div>
+                <address className="text-white/70 text-sm not-italic leading-relaxed">
+                  Pyale Workhub,<br />
+                  21 Bekwere Wosu Street,<br />
+                  D-Line, Diobu, Port Harcourt,<br />
+                  Rivers State
+                </address>
+                <a
+                  href="tel:+2347067246050"
+                  className="text-primary hover:underline text-sm font-mono mt-1 block"
+                >
+                  07067246050
+                </a>
+              </li>
+              <li>
+                <div className="text-xs text-white/40 mb-1 font-mono">USA Office</div>
+                <address className="text-white/70 text-sm not-italic leading-relaxed">
+                  16501 Shady Grove Road,<br />
+                  Suite 8885,<br />
+                  Gaithersburg, MD 20898
+                </address>
+                <a
+                  href="tel:+19178218640"
+                  className="text-primary hover:underline text-sm font-mono mt-1 block"
+                >
+                  +1 917 821 8640
+                </a>
               </li>
             </ul>
           </div>
